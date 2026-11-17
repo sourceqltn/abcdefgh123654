@@ -9472,7 +9472,7 @@ body.light-mode .kh-swipe > .kh-card { background-color: var(--light-card); }
    · Nền dùng token `--page-bg` nên tự đúng ở cả 2 theme (light `#eef1f4` · dark `#0b0d12`).
    · Nút “Đăng nhập” dùng ĐÚNG bộ màu của nút “Chọn tệp Excel khác” (nền `#1d4ed8`, chữ
      trắng, hover `#1e40af`, active `#1e3a8a`) ⇒ cả app giữ một tông xanh.
-   ⚠️ Đổi mật khẩu: sửa mảng `LOGIN_PASSES` trong script ngay dưới markup `#loginGate`.
+   ⚠️ Đổi mật khẩu: sửa hằng `LOGIN_PASS` trong script ngay dưới markup `#loginGate`.
    ⛔ Đây là khoá MỀM (mã nằm trong `index.html`) — đủ chặn người dùng thường, KHÔNG phải
      bảo mật thật; muốn thật thì phải có server. */
 body.login-locked { overflow: hidden; }
@@ -9543,42 +9543,6 @@ body.light-mode .login-err { color: #dc2626; }
 }
 .login-btn:hover { background: #1e40af; }
 .login-btn:active { background: #1e3a8a; }
-
-/* 🔒 2026-11-17: bảng cảnh báo “mật khẩu đang dùng trên máy khác” — hiện THAY form đăng nhập,
-   cùng khung `.login-card`, đồng hồ đếm ngược 12 giờ (số mono để bề rộng không nhảy). */
-#loginLock[hidden] { display: none; }
-.login-lock-ico { font-size: 34px; line-height: 1; margin-bottom: 8px; }
-.login-lock-clock {
-  margin: 14px 0 4px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 30px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  color: #f87171;
-}
-body.light-mode .login-lock-clock { color: #dc2626; }
-.login-lock-note { margin-top: 4px; font-size: 12px; color: #94a3b8; }
-body.light-mode .login-lock-note { color: #64748b; }
-
-/* 🔔 2026-11-17: thẻ hỏi quyền kiểu “thông báo đăng nhập mới” của Google. */
-#loginAsk {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 99990;
-  background: rgba(2,6,23,0.62);
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-}
-#loginAsk.on { display: flex; }
-.login-ask-card { max-width: 360px; }
-.login-ask-btns { display: flex; gap: 8px; margin-top: 14px; }
-.login-ask-btns .login-btn { height: 42px; font-size: 15px; }
-.login-btn-ghost { background: transparent; color: #94a3b8; border-color: #334155; }
-.login-btn-ghost:hover { background: rgba(148,163,184,0.12); }
-body.light-mode .login-btn-ghost { color: #475569; border-color: #cbd5e1; }
-body.light-mode .login-btn-ghost:hover { background: #f1f5f9; }
 </style>
 </head>
 <body>
@@ -9626,12 +9590,6 @@ body.light-mode .login-btn-ghost:hover { background: #f1f5f9; }
     } catch (err) {
       document.body.classList.add('login-locked');
     }
-    /* 🔒 2026-11-17: đang trong 12 giờ chờ ⇒ chặn NGAY từ khung hình đầu, kể cả phiên này đã
-       từng đăng nhập. (Bảng cảnh báo + đồng hồ do script màn đăng nhập dựng.) */
-    try {
-      var __khoa = JSON.parse(localStorage.getItem('qlno_khoa_mk_v1') || 'null');
-      if (__khoa && __khoa.until && __khoa.until > Date.now()) document.body.classList.add('login-locked');
-    } catch (err2) {}
   } catch (e) {}
 })();
 </script>
@@ -9643,7 +9601,7 @@ body.light-mode .login-btn-ghost:hover { background: #f1f5f9; }
        bắt phím Esc của app.
      · `z-index: 99999` (CSS `.login-gate`) ⇒ nằm TRÊN mọi lớp nổi: modal 300 · toast 4000 ·
        hộp nhấn-giữ 4200.
-     · Mật khẩu = mảng `LOGIN_PASSES` trong khối script ngay dưới. Đây là khoá MỀM (mã nằm trong
+     · Mật khẩu = hằng `LOGIN_PASS` trong khối script ngay dưới. Đây là khoá MỀM (mã nằm trong
        tệp) — đủ chặn người dùng thường; muốn bảo mật thật thì phải có server.
      ⛔ Icon khoá vẽ SVG TẠI CHỖ (sprite KHÔNG có `#i-lock`); theo đúng 3 quy tắc icon:
         lưới 24×24 · nét `stroke-width 2.2` · ăn `currentColor`. -->
@@ -9666,177 +9624,46 @@ body.light-mode .login-btn-ghost:hover { background: #f1f5f9; }
     <div id="loginErr" class="login-err" role="alert"></div>
     <button type="submit" class="login-btn">Đăng nhập</button>
   </form>
-  <!-- 🔒 2026-11-17: BẢNG CẢNH BÁO “MẬT KHẨU ĐANG DÙNG TRÊN MÁY KHÁC” — hiện THAY form đăng nhập
-       khi mã đã gắn máy khác (xem `hienKhoa` trong script dưới). `hidden` cho tới lúc bị đá ra.
-       Đồng hồ đếm ngược 12 giờ là THẬT, chỉ việc “phải chờ” là tượng trưng. -->
-  <div id="loginLock" class="login-card" hidden>
-    <div class="login-lock-ico">⏳</div>
-    <h2 class="login-title" id="loginLockTitle">Mật khẩu đang dùng trên máy khác</h2>
-    <p class="login-sub">Mỗi mật khẩu chỉ dùng được trên <b>1 máy</b>.<br>
-      Máy này đã bị đăng xuất — vui lòng đợi <b>12 giờ</b> để đăng nhập lại.</p>
-    <div id="loginLockClock" class="login-lock-clock">12:00:00</div>
-    <div id="loginLockNote" class="login-lock-note"></div>
-  </div>
-</div>
-
-<!-- 🔔 2026-11-17: THẺ HỎI QUYỀN “CÓ 1 MÁY KHÁC ĐANG ĐĂNG NHẬP” (kiểu Google) — hiện trên máy
-     ĐANG đăng nhập khi máy khác nhập cùng mật khẩu. Cho phép ⇒ nhường mã + máy này đăng xuất;
-     Không cho phép ⇒ máy kia bị khoá 12 giờ. Script ngay dưới màn đăng nhập dựng/hiện thẻ này. -->
-<div id="loginAsk">
-  <div class="login-card login-ask-card">
-    <div class="login-lock-ico">📱</div>
-    <h2 class="login-title" id="loginAskTitle">Có 1 máy khác đang đăng nhập</h2>
-    <p class="login-sub" id="loginAskBody">Một máy khác đang dùng mật khẩu của bạn.</p>
-    <div class="login-ask-btns">
-      <button id="loginAskNo" class="login-btn login-btn-ghost" type="button">Không cho phép</button>
-      <button id="loginAskYes" class="login-btn" type="button">Cho phép</button>
-    </div>
-  </div>
 </div>
 <script>
-/* 🔒 2026-11-10 — Mở khoá màn đăng nhập. Đổi mật khẩu: sửa ĐÚNG mảng LOGIN_PASSES dưới đây.
+/* 🔒 2026-11-10 — Mở khoá màn đăng nhập. Đổi mật khẩu: sửa ĐÚNG hằng LOGIN_PASS dưới đây.
    · Giống `CUT_PASS`/`cutUnlock` của “Xuất file cắt”: so `trim()` nên gõ dư dấu cách vẫn qua.
    · Mở khoá xong ghi `sessionStorage['qlno_login_v1'] = '1'` rồi gỡ lớp `login-locked`
      ⇒ app hiện ra, cuộn được (CSS khoá cuộn khi còn lớp đó).
    · Nếu vì lý do gì đó markup/CSS không khớp (không có `.login-locked`) thì hàm THOÁT NGAY,
      ⛔ không chặn nhầm app. */
 (function () {
-  /* 🔒 2026-11-17 (yêu cầu “mật khẩu chia ra thành 5 cái riêng 1,2,3,4,5; 1 mật khẩu chỉ dùng
-     được trên 1 máy; máy khác đăng nhập cùng mã thì máy này bị đăng xuất + hiện bảng cảnh báo
-     đợi 12 giờ có đồng hồ đếm ngược”).
-     · 5 mã `1`…`5` dùng CHUNG cho điện thoại và máy tính (thay 2 mã cũ `2151` / `1475369`).
-     · Mỗi mã GẮN với MÁY ĐẦU TIÊN dùng nó (bảng `qlno_mk_v1`). Mã đã gắn máy KHÁC ⇒ máy này bị
-       ĐĂNG XUẤT + hiện bảng `#loginLock`, khoá 12 giờ, có đồng hồ đếm ngược thật.
-     ⚠️ APP MỘT TỆP, KHÔNG CÓ SERVER ⇒ 2 máy vật lý KHÔNG đọc được bảng gắn của nhau: “1 mã 1
-        máy” chỉ đúng trong CÙNG một trình duyệt/hồ sơ máy. Muốn chặn thật phải có server.
-        Cách THỬ: mở `index.html?may=M2` (cùng trình duyệt) ⇒ tab đó thấy mã đã gắn máy khác.
-     ⛔ Đừng đọc cờ đăng nhập bằng localStorage — đóng tab vẫn còn khoá là mất tác dụng. */
-  var LOGIN_PASSES = ['1', '2', '3', '4', '5'];
-  var MAY_KEY = 'qlno_may_v1';        // mã máy (giữ nguyên giữa các lần mở)
-  var MK_KEY = 'qlno_mk_v1';          // { '<mã>': { dev: 'Mxxxx', at: <ms> } } — mã đã gắn máy nào
-  var KHOA_KEY = 'qlno_khoa_mk_v1';   // { code, dev, from, until } — bảng cảnh báo 12 giờ
-  var KHOA_MS = 12 * 60 * 60 * 1000;  // 12 giờ
-  var CHO_KEY = 'qlno_cho_v1';        // yêu cầu xin quyền: { id, code, dev, from, at, status }
-  /* ── Trợ giúp: JSON, mã máy, đồng hồ 12 giờ ─────────────────────────────────── */
-  function docJson(key, macDinh) {
-    try { var raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : macDinh; }
-    catch (e) { return macDinh; }
-  }
-  function ghiJson(key, val) {
-    try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {}
-  }
-  /* Mã máy: ưu tiên `?may=` (CHỈ để thử tính năng, không lưu), rồi mã đã lưu, rồi sinh mới. */
-  function maMay() {
-    var tuUrl = '';
-    try { tuUrl = (new URLSearchParams(location.search)).get('may') || ''; } catch (e) {}
-    if (tuUrl) return String(tuUrl).trim().toUpperCase();
-    var id = '';
-    try { id = localStorage.getItem(MAY_KEY) || ''; } catch (e) {}
-    if (!id) {
-      id = 'M' + Math.random().toString(36).slice(2, 7).toUpperCase();
-      try { localStorage.setItem(MAY_KEY, id); } catch (e) {}
-    }
-    return id;
-  }
-  function haiSo(ms) {
-    var n = Math.floor(ms / 1000);
-    if (n < 0) n = 0;
-    var h = Math.floor(n / 3600), m = Math.floor((n % 3600) / 60), sec = n % 60;
-    return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m + ':' + (sec < 10 ? '0' : '') + sec;
-  }
-  var _dongHo = null;
-  function dungDongHo() { if (_dongHo) { clearInterval(_dongHo); _dongHo = null; } }
-  /* Hiện bảng cảnh báo + đồng hồ đếm ngược; hết 12 giờ thì trả lại form đăng nhập. */
-  function hienKhoa(k) {
-    var box = document.getElementById('loginLock');
-    var clock = document.getElementById('loginLockClock');
-    var note = document.getElementById('loginLockNote');
-    if (!box || !clock) return;
-    box.hidden = false;
-    form.style.display = 'none';
-    if (note) note.textContent = k && k.from ? ('Mã này đang dùng trên máy ' + k.from) : '';
-    dungDongHo();
-    function ve() {
-      var con = (k && k.until ? k.until : 0) - Date.now();
-      if (con <= 0) {
-        dungDongHo();
-        try { localStorage.removeItem(KHOA_KEY); } catch (e) {}
-        box.hidden = true;
-        form.style.display = '';
-        if (err) err.textContent = 'Đã hết 12 giờ chờ — mời đăng nhập lại.';
-        try { inp.focus(); } catch (e) {}
-        return;
-      }
-      clock.textContent = haiSo(con);
-    }
-    ve();
-    _dongHo = setInterval(ve, 1000);
-  }
-
-  /* 🔔 Máy này nhập mã ĐÃ GẮN MÁY KHÁC ⇒ gửi yêu cầu xin quyền rồi chờ (kiểu Google).
-     Máy kia Cho phép ⇒ gắn mã cho máy này + vào app. Không cho phép / quá 90 giây ⇒ khoá 12 giờ. */
-  var _choTimer = null;
-  function hienCho(cho) {
-    var box = document.getElementById('loginLock');
-    var tieuDe = document.getElementById('loginLockTitle');
-    var clock = document.getElementById('loginLockClock');
-    var note = document.getElementById('loginLockNote');
-    if (!box || !clock) return;
-    box.hidden = false;
-    form.style.display = 'none';
-    if (tieuDe) tieuDe.textContent = 'Đang chờ máy khác cho phép';
-    if (note) note.textContent = 'Đã gửi yêu cầu tới máy ' + cho.from + ' — chờ xác nhận…';
-    dungDongHo();
-    if (_choTimer) { clearInterval(_choTimer); _choTimer = null; }
-    var batDau = Date.now();
-    var choMs = 90000;                       // 90 giây chờ máy kia trả lời
-    clock.textContent = haiSo(choMs);
-    _choTimer = setInterval(function () {
-      var st = docJson(CHO_KEY, null);
-      var con = choMs - (Date.now() - batDau);
-      clock.textContent = haiSo(con > 0 ? con : 0);
-      if (st && st.id === cho.id && st.status === 'allow') {
-        clearInterval(_choTimer); _choTimer = null;
-        /* Máy kia đã nhường mã ⇒ gắn mã cho MÁY NÀY rồi vào app. */
-        var mk2 = docJson(MK_KEY, {});
-        mk2[cho.code] = { dev: maMay(), at: Date.now() };
-        ghiJson(MK_KEY, mk2);
-        try { localStorage.removeItem(CHO_KEY); } catch (e) {}
-        try { sessionStorage.setItem(LOGIN_KEY, '1'); } catch (e) {}
-        box.hidden = true;
-        form.style.display = '';
-        if (tieuDe) tieuDe.textContent = 'Mật khẩu đang dùng trên máy khác';
-        document.body.classList.remove('login-locked');
-        try { if (typeof showToast === 'function') showToast('✅ Máy ' + cho.from + ' đã cho phép — đã đăng nhập'); } catch (e) {}
-        return;
-      }
-      if ((st && st.id === cho.id && st.status === 'deny') || con <= 0) {
-        clearInterval(_choTimer); _choTimer = null;
-        try { localStorage.removeItem(CHO_KEY); } catch (e) {}
-        if (tieuDe) tieuDe.textContent = 'Mật khẩu đang dùng trên máy khác';
-        var kMoi = { code: cho.code, dev: maMay(), from: cho.from, until: Date.now() + KHOA_MS };
-        ghiJson(KHOA_KEY, kMoi);
-        hienKhoa(kMoi);
-      }
-    }, 1000);
+  var LOGIN_PASS = '2151';      /* 🔄 2026-11-10: 2151 → Fuckoff → **2151** (yêu cầu “cho mật khẩu đăng nhập là 2151”) */
+  /* 🔒 2026-11-16 (yêu cầu “cho máy tính nhận chỉ 1 mật khẩu 1475369, nhập 2151 sẽ không được”):
+     MÁY TÍNH chỉ nhận **1475369**, ĐIỆN THOẠI chỉ nhận **2151** — mỗi bên đúng 1 mã, KHÔNG dùng
+     chéo (máy tính gõ 2151 ⇒ “Mật khẩu không đúng”; điện thoại gõ 1475369 ⇒ cũng sai).
+     ⟳ 2026-11-16 (tiếp): nhận diện “máy tính” KHÔNG còn chỉ dựa vào chuột thật — laptop cảm ứng /
+     tablet có bàn phím bị `hover:none` nên trước đây bị xếp là điện thoại. Nay xét 4 dấu hiệu, chỉ
+     cần MỘT cái đúng là máy tính:
+       1. `body.force-desktop` — người dùng tự bật giao diện máy tính;
+       2. `window.innerWidth >= 1024` — màn hình rộng (PC, laptop, tablet nằm ngang);
+       3. `navigator.maxTouchPoints === 0` — máy KHÔNG có màn cảm ứng (PC/laptop thường);
+       4. `matchMedia('(hover: hover) and (pointer: fine)')` — có con trỏ chuột thật.
+     ⇒ Điện thoại (rộng < 1024, CÓ cảm ứng, `hover:none`) mới rơi vào nhánh `2151`.
+     ⚠️ Hàm chạy LẠI MỖI LẦN bấm “Đăng nhập” (không chốt lúc tải trang) ⇒ xoay ngang máy tính bảng
+     hay kéo rộng cửa sổ rồi mới nhập mã vẫn được nhận đúng.
+     ⛔ Đừng bỏ vế `laMayTinh()` ở điều kiện bên dưới (2 mã sẽ dùng lẫn được cho nhau). */
+  var LOGIN_PASS_PC = '1475369';
+  function laMayTinh() {
+    try {
+      if (document.body.classList.contains('force-desktop')) return true;
+      if (window.innerWidth >= 1024) return true;
+      if ((navigator.maxTouchPoints || 0) === 0) return true;
+      if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) return true;
+    } catch (e) {}
+    return false;
   }
   var LOGIN_KEY = 'qlno_login_v1';
   var gate = document.getElementById('loginGate');
   var form = document.getElementById('loginForm');
   var inp = document.getElementById('loginPass');
   var err = document.getElementById('loginErr');
-  if (!gate || !form || !inp) return;
-  /* 🔒 2026-11-17: đang trong 12 giờ chờ (bị đá ra vì mã đã dùng ở máy khác) ⇒ vẫn phải hiện
-     bảng cảnh báo, kể cả phiên này đã từng đăng nhập. */
-  var khoaCu = docJson(KHOA_KEY, null);
-  var dangKhoa = !!(khoaCu && khoaCu.until && khoaCu.until > Date.now());
-  if (dangKhoa) document.body.classList.add('login-locked');
-  if (!document.body.classList.contains('login-locked')) return;
-  /* Lời nhắn còn lại sau khi máy này bị đăng xuất (ví dụ: vừa Cho phép máy khác dùng mã). */
-  try {
-    var msgCu = sessionStorage.getItem('qlno_login_msg');
-    if (msgCu) { sessionStorage.removeItem('qlno_login_msg'); if (err) err.textContent = msgCu; }
-  } catch (e) {}
+  if (!gate || !form || !inp || !document.body.classList.contains('login-locked')) return;
 
   function loi(msg) {
     if (err) err.textContent = msg;
@@ -9848,29 +9675,10 @@ body.light-mode .login-btn-ghost:hover { background: #f1f5f9; }
     ev.preventDefault();
     var v = String(inp.value == null ? '' : inp.value).trim();
     if (!v) { loi('Vui lòng nhập mật khẩu'); return; }
-    /* 🔒 2026-11-17: 5 mã `1`…`5`; mỗi mã chỉ 1 máy (xem khối chú thích đầu script). */
-    if (LOGIN_PASSES.indexOf(v) < 0) { loi('Mật khẩu không đúng'); return; }
-    var myId = maMay();
-    var mk = docJson(MK_KEY, {});
-    var rec = mk[v] || null;
-    if (rec && rec.dev && rec.dev !== myId) {
-      /* 🔔 Mã đã gắn MÁY KHÁC ⇒ KHÔNG đá ngay: gửi YÊU CẦU sang máy đang giữ mã (thẻ #loginAsk
-         kiểu Google). Máy kia Cho phép ⇒ vào app; Không cho phép / 90 giây không trả lời ⇒ khoá 12 giờ. */
-      var cho = {
-        id: 'R' + Math.random().toString(36).slice(2, 8).toUpperCase(),
-        code: v, dev: myId, from: rec.dev, at: Date.now(), status: 'pending'
-      };
-      ghiJson(CHO_KEY, cho);
-      inp.value = '';
-      if (err) err.textContent = '';
-      document.body.classList.add('login-locked');
-      hienCho(cho);
-      return;
-    }
-    mk[v] = { dev: myId, at: Date.now() };
-    ghiJson(MK_KEY, mk);
-    try { localStorage.removeItem(KHOA_KEY); } catch (e) {}   // đúng máy ⇒ bỏ khoá cũ
-    dungDongHo();
+    /* 🔒 2026-11-16: máy tính CHỈ 1475369 · điện thoại CHỈ 2151 — không nhận chéo.
+       `laMayTinh()` gọi tại đây (mỗi lần bấm) để đúng cả khi vừa xoay/kéo rộng màn hình. */
+    var ok = laMayTinh() ? (v === LOGIN_PASS_PC) : (v === LOGIN_PASS);
+    if (!ok) { loi('Mật khẩu không đúng'); return; }
     try { sessionStorage.setItem(LOGIN_KEY, '1'); } catch (e) {}
     if (err) err.textContent = '';
     inp.value = '';           // mở khoá xong thì xoá mã khỏi ô, không để lộ lại trong DOM
@@ -9880,89 +9688,7 @@ body.light-mode .login-btn-ghost:hover { background: #f1f5f9; }
   // Gõ lại là xoá dòng báo lỗi cho đỡ rối mắt.
   inp.addEventListener('input', function () { if (err) err.textContent = ''; });
 
-  if (dangKhoa) hienKhoa(khoaCu);
-  else { try { inp.focus(); } catch (e) {} }
-})();
-</script>
-
-<script>
-/* 🔔 2026-11-17 — “CÓ 1 MÁY KHÁC ĐANG ĐĂNG NHẬP” (kiểu thông báo đăng nhập của Google).
-   Máy ĐANG đăng nhập nghe yêu cầu của máy khác qua `localStorage['qlno_cho_v1']` (chung origin)
-   ⇒ hiện thẻ `#loginAsk` với 2 nút:
-     · Cho phép      ⇒ nhường mã cho máy kia (`qlno_mk_v1[<mã>].dev = <máy kia>`), máy này ĐĂNG XUẤT.
-     · Không cho phép ⇒ máy kia bị KHOÁ 12 GIỜ (nó tự thấy `status:'deny'`).
-   ⚠️ Chỉ chạy giữa các TAB cùng origin (app một tệp, không server) — xem mục 2026-11-17 trong
-      AGENTS.md. ⛔ Đừng bỏ `setInterval` dự phòng: `storage` event không bắn khi tab bị ẩn. */
-(function () {
-  var CHO_KEY = 'qlno_cho_v1', MK_KEY = 'qlno_mk_v1', MAY_KEY = 'qlno_may_v1';
-  var LOGIN_KEY = 'qlno_login_v1';
-  function docJson(k, d) { try { var r = localStorage.getItem(k); return r ? JSON.parse(r) : d; } catch (e) { return d; } }
-  function ghiJson(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
-  function maMay() {
-    var u = ''; try { u = (new URLSearchParams(location.search)).get('may') || ''; } catch (e) {}
-    if (u) return String(u).trim().toUpperCase();
-    var id = ''; try { id = localStorage.getItem(MAY_KEY) || ''; } catch (e) {}
-    return id || '';
-  }
-  var box = document.getElementById('loginAsk');
-  if (!box) return;
-  var title = document.getElementById('loginAskTitle');
-  var body = document.getElementById('loginAskBody');
-  var btnYes = document.getElementById('loginAskYes');
-  var btnNo = document.getElementById('loginAskNo');
-  var _dangHoi = null;
-
-  function dangDangNhap() {
-    var ok = false;
-    try { ok = sessionStorage.getItem(LOGIN_KEY) === '1'; } catch (e) {}
-    return ok && !document.body.classList.contains('login-locked');
-  }
-  function laChuMa(code) {
-    var rec = docJson(MK_KEY, {})[code];
-    return !!(rec && rec.dev && rec.dev === maMay());
-  }
-  function hien(cho) {
-    _dangHoi = cho;
-    if (title) title.textContent = 'Có 1 máy khác đang đăng nhập';
-    if (body) {
-      body.innerHTML = 'Máy <b>' + cho.dev + '</b> đang dùng mật khẩu <b>' + cho.code +
-        '</b> để đăng nhập.<br>Cho phép máy đó đăng nhập? Nếu cho phép, <b>máy này sẽ bị đăng xuất</b>.';
-    }
-    box.classList.add('on');
-  }
-  function an() { _dangHoi = null; box.classList.remove('on'); }
-  function kiemTra() {
-    if (!dangDangNhap()) return;
-    var cho = docJson(CHO_KEY, null);
-    if (!cho || cho.status !== 'pending') return;
-    if (Date.now() - (cho.at || 0) > 90000) return;   // yêu cầu quá cũ
-    if (cho.dev === maMay()) return;                  // của chính máy này
-    if (!laChuMa(cho.code)) return;                   // không phải máy đang giữ mã
-    if (_dangHoi && _dangHoi.id === cho.id) return;   // đang hỏi rồi
-    hien(cho);
-  }
-  if (btnYes) btnYes.addEventListener('click', function () {
-    var cho = _dangHoi; if (!cho) return;
-    var mk = docJson(MK_KEY, {});
-    mk[cho.code] = { dev: cho.dev, at: Date.now() };  // nhường mã cho máy kia
-    ghiJson(MK_KEY, mk);
-    ghiJson(CHO_KEY, { id: cho.id, code: cho.code, dev: cho.dev, at: cho.at, status: 'allow' });
-    try {
-      sessionStorage.removeItem(LOGIN_KEY);
-      sessionStorage.setItem('qlno_login_msg', 'Bạn đã cho phép máy ' + cho.dev + ' dùng mật khẩu này — máy này đã đăng xuất.');
-    } catch (e) {}
-    an();
-    location.reload();
-  });
-  if (btnNo) btnNo.addEventListener('click', function () {
-    var cho = _dangHoi; if (!cho) return;
-    ghiJson(CHO_KEY, { id: cho.id, code: cho.code, dev: cho.dev, at: cho.at, status: 'deny' });
-    an();
-    try { if (typeof showToast === 'function') showToast('🚫 Đã từ chối máy ' + cho.dev); } catch (e) {}
-  });
-  window.addEventListener('storage', function (e) { if (!e.key || e.key === CHO_KEY) kiemTra(); });
-  setInterval(kiemTra, 2000);
-  kiemTra();
+  try { inp.focus(); } catch (e) {}
 })();
 </script>
 
@@ -16769,8 +16495,13 @@ const CD_IC_LEDGER = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidde
   '<path d="M4.7 17.2c1.3 0 1.4-1.9 2.7-1.9s1.4 1.9 2.7 1.9 1.4-1.9 2.7-1.9 1.4 1.9 2.7 1.9" fill="none" stroke="#8f9cb4" stroke-width="1.5" stroke-linecap="round"/>' +
   '</svg>';
 
+/* Mã KH đang mở ở tấm “Chi tiết” — dùng cho “Chụp ảnh liên 1” (menu Xuất file cắt). Ghi ở
+   `showDetailRow` để lối vào từ menu biết đang nói về khách nào. */
+let _detailMa = '';
+
 function showDetailRow(r) {
   if (!r) return;
+  _detailMa = r.ma_khach_hang || '';
   document.getElementById('modalName').textContent = r.ten_khach_hang || 'Không có tên';
   document.getElementById('modalMa').textContent = r.ma_khach_hang;
 
