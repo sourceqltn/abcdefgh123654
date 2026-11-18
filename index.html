@@ -6595,7 +6595,6 @@ body.light-mode mark { background: rgba(59,130,246,0.2); color: #1d4ed8; }
    Yêu cầu người dùng: “tôi muốn khi chạm vào số tiền thì hiện bảng giao diện như ảnh”.
    Tấm này DÙNG LẠI `.modal-overlay` + `.modal` (nên cùng kiểu trượt lên ở điện thoại, cùng
    bo góc, cùng nền theo theme với tấm “Chi tiết”) — ở đây chỉ khai RUỘT riêng.
-   ⛔ Link “Xem giấy báo” KHÔNG có dữ liệu nên CHỈ ĐỂ HIỂN THỊ (người dùng đã chốt).
    ⟳ 2026-10-15: nút mã QR trong ô “Mã khách hàng” NAY CÓ VIỆC THẬT — chạm là chụp tấm này
       thành ảnh PNG để lưu/chia sẻ (`capturePayShot()`, xem `#shotModal`). Nó KHÔNG quét mã.
    ⟳ 2026-10-16f: chạm nút ⇒ ảnh xong là **LƯU THẲNG XUỐNG MÁY** (`shotSaveToDevice()`) — không
@@ -6689,7 +6688,7 @@ body.light-mode mark { background: rgba(59,130,246,0.2); color: #1d4ed8; }
   ⟳ 2026-10-15: ⛔ CHẠM VÀO TÊN KHÔNG MỞ TẤM “CHI TIẾT” NỮA (yêu cầu người dùng: “tôi muốn
   ẩn chức năng khi chạm vào tên kh vẫn hiển thị bảng modal”) — `onclick` đã gỡ khỏi
   `.pay-name` và hàm `payOpenDetail()` đã XOÁ. Nhờ vậy tên khách ở tấm này thuần HIỂN THỊ,
-  cùng nhóm với “Xem giấy báo” và nút đỏ.
+  cùng nhóm với nút đỏ “Tiếp tục thanh toán”.
   ⟳ 2026-10-16: đường dự phòng cũ (“chạm tên kh TRÊN THẺ” để mở “Chi tiết”) cũng đã GỠ theo
   yêu cầu lần 2 — nay tấm “Chi tiết” (`#modal` + `showDetailRow()`) **không còn đường mở nào**
   từ giao diện. Muốn dựng lại một đường CHỦ Ý (nút ⓘ trên thẻ, hoặc nhấn 2 lần…) thì hỏi
@@ -6741,8 +6740,6 @@ body.light-mode mark { background: rgba(59,130,246,0.2); color: #1d4ed8; }
    mà giữ chữ là quay lại đúng cái dẹt vừa chữa. */
 .pay-badge { display: inline-flex; align-items: center; gap: 9px; background: #e8a822; color: #ffffff; font-size: 14px; font-weight: 600; padding: 6.5px 12px; border-radius: 999px; white-space: nowrap; }
 .pay-badge::before { content: ''; width: 9px; height: 9px; border-radius: 50%; background: #ffffff; flex: 0 0 auto; }
-.pay-notice { margin-left: auto; font-size: 15px; color: #60a5fa; white-space: nowrap; }
-.pay-notice { color: #2563eb; }   /* ⟳ 2026-10-13h: luôn tông đậm (nền tấm luôn trắng) */
 /* ⟳ 2026-10-13p: **HAI HÀNG SỐ TIỀN CANH THẲNG NHAU + SỐ TRÊN MÀU ĐEN** (yêu cầu: “canh chỉnh
    2 hàng số tiền bằng nhau, và số tiền ở trên màu đen”).
    ĐO TRÊN ẢNH NGƯỜI DÙNG GỬI (619×227, `.freebuff/pay-rows.ps1`): hai số **ĐÃ cùng cỡ** — đều
@@ -6793,7 +6790,7 @@ body.light-mode mark { background: rgba(59,130,246,0.2); color: #1d4ed8; }
 .pay-inv-amt .mil-digit, .pay-foot-val .mil-digit { color: inherit; }   /* ⟳ 2026-10-13p: nhờ vậy chữ số triệu của hàng trên ĐEN, hàng dưới ĐỎ — mỗi số vẫn MỘT màu */
 /* Nút đỏ “Tiếp tục thanh toán” của ảnh (yêu cầu: “thêm dòng đỏ tiếp tục thanh toán như trong ảnh”).
    ⛔ CHỈ ĐỂ HIỂN THỊ — chưa có cổng thanh toán nào, cùng lựa chọn người dùng đã chốt cho nút
-   quét mã và “Xem giấy báo”; `title` nói rõ để không ai tưởng bấm là tiền đi.
+   quét mã; `title` nói rõ để không ai tưởng bấm là tiền đi.
    ĐO: chữ trắng trên `#d32f2f` = **4,98:1** ✓ (trên ngưỡng 4,5 cho chữ đậm 16px).
    ⚠️ `#d32f2f` GIỮ NGUYÊN ở hai theme (giống viên hổ phách `.pay-badge`): nền đỏ + chữ trắng
    đọc được trên cả nền sáng và tối nên không cần bản riêng cho theme sáng. */
@@ -6870,7 +6867,7 @@ body .modal.pay-modal > .modal-handle { background: rgba(0,0,0,0.15); }   /* tay
 .old-ky-txt { flex: 1 1 auto; min-width: 0; }
 .old-ky-note b { color: #60a5fa; font-weight: 700; }
 /* Nút mở bảng thống kê: viền xanh nhạt đúng bộ với các pill khác của app — `#60a5fa` ở theme tối
-   và `#2563eb` ở theme sáng (cùng cặp màu của `.pay-notice`), không dùng một biến vì app chỉ
+   và `#2563eb` ở theme sáng (cùng cặp màu của nút mã QR `.pay-qr`), không dùng một biến vì app chỉ
    khai lại `--text-dim` trong `body.light-mode`. */
 .old-ky-btn { flex: 0 0 auto; padding: 5px 10px; border-radius: 8px; border: 1px solid #60a5fa; background: transparent; color: #60a5fa; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; }
 body.light-mode .old-ky-note { color: #5b6777; border-bottom-color: #e2e8f0; }
@@ -9460,9 +9457,12 @@ body.light-mode .kh-swipe > .kh-card { background-color: var(--light-card); }
   body:not(.light-mode).force-desktop .table-view tbody td:nth-child(6) { background: #253650; }
 }
 
-/* ═══ 🔒 MÀN HÌNH ĐĂNG NHẬP — MẬT KHẨU `2151` (2026-11-10) ═════════════════════════
+/* ═══ 🔒 MÀN HÌNH ĐĂNG NHẬP — 5 TÀI KHOẢN (2026-11-10; 2026-11-18) ═════════════════════════
    Yêu cầu người dùng: “đặt mật khẩu để đăng nhập, mật khẩu là 2151” → đổi thành “Fuckoff”
    → rồi **đổi LẠI 2151** (yêu cầu “cho mật khẩu đăng nhập là 2151”, cùng ngày).
+   · ⟳ 2026-11-18 (yêu cầu “tối đa chỉ được 5 tài khoản đăng nhập”): form có **2 ô** (TÀI KHOẢN +
+     mật khẩu), danh sách tối đa **5** tài khoản ở hằng `LOGIN_ACCOUNTS`; không còn một mật khẩu
+     dùng chung và không còn chia mã theo thiết bị (`laMayTinh`).
    · Màn che phủ TOÀN trang, `z-index` cao hơn MỌI lớp nổi của app (modal 300 · toast 4000 ·
      hộp nhấn-giữ 4200) ⇒ chưa nhập đúng mã thì KHÔNG có đường lọt vào app.
    · MẶC ĐỊNH `display:none`; chỉ hiện khi `<body>` có lớp `login-locked`. Lớp đó do script
@@ -9472,7 +9472,8 @@ body.light-mode .kh-swipe > .kh-card { background-color: var(--light-card); }
    · Nền dùng token `--page-bg` nên tự đúng ở cả 2 theme (light `#eef1f4` · dark `#0b0d12`).
    · Nút “Đăng nhập” dùng ĐÚNG bộ màu của nút “Chọn tệp Excel khác” (nền `#1d4ed8`, chữ
      trắng, hover `#1e40af`, active `#1e3a8a`) ⇒ cả app giữ một tông xanh.
-   ⚠️ Đổi mật khẩu: sửa hằng `LOGIN_PASS` trong script ngay dưới markup `#loginGate`.
+   ⚠️ Đổi/thêm tài khoản: sửa mảng `LOGIN_ACCOUNTS` trong script ngay dưới markup `#loginGate`
+   (tối đa 5 dòng, xem 2026-11-18).
    ⛔ Đây là khoá MỀM (mã nằm trong `index.html`) — đủ chặn người dùng thường, KHÔNG phải
      bảo mật thật; muốn thật thì phải có server. */
 body.login-locked { overflow: hidden; }
@@ -9526,7 +9527,10 @@ body.light-mode .login-sub { color: #64748b; }
   letter-spacing: 4px;
 }
 body.light-mode .login-in { border-color: #cbd5e1; background: #f8fafc; color: #0f172a; }
-.login-in:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.22); }
+/* 🔒 2026-11-18: ô TÀI KHOẢN mới — cách ô mật khẩu 10px; ô mật khẩu giãn chữ 4px nên
+   tên tài khoản chỉ giãn 1px cho dễ đọc. */
+.login-in + .login-in { margin-top: 10px; }
+.login-in-user { letter-spacing: 1px; }
 .login-err { min-height: 18px; margin: 8px 0 4px; font-size: 12.5px; color: #f87171; }
 body.light-mode .login-err { color: #dc2626; }
 .login-btn {
@@ -9601,8 +9605,9 @@ body.light-mode .login-err { color: #dc2626; }
        bắt phím Esc của app.
      · `z-index: 99999` (CSS `.login-gate`) ⇒ nằm TRÊN mọi lớp nổi: modal 300 · toast 4000 ·
        hộp nhấn-giữ 4200.
-     · Mật khẩu = hằng `LOGIN_PASS` trong khối script ngay dưới. Đây là khoá MỀM (mã nằm trong
-       tệp) — đủ chặn người dùng thường; muốn bảo mật thật thì phải có server.
+     · TÀI KHOẢN + Mật khẩu = mảng `LOGIN_ACCOUNTS` trong khối script ngay dưới (tối đa 5 tài
+       khoản). Đây là khoá MỀM (đọc được trong tệp) — đủ chặn người dùng thường;
+       muốn bảo mật thật thì phải có server.
      ⛔ Icon khoá vẽ SVG TẠI CHỖ (sprite KHÔNG có `#i-lock`); theo đúng 3 quy tắc icon:
         lưới 24×24 · nét `stroke-width 2.2` · ăn `currentColor`. -->
 <div id="loginGate" class="login-gate">
@@ -9616,79 +9621,90 @@ body.light-mode .login-err { color: #dc2626; }
       </svg>
     </div>
     <h2 class="login-title">abcdefghz</h2>
-    <p class="login-sub">Nhập mật khẩu để mở ứng dụng</p>
-    <!-- ⚠️ 2026-11-10: mật khẩu quay lại mã SỐ (`2151`) ⇒ `inputmode="numeric"` cho điện thoại
-         bật bàn phím số. (Bản `text` trước đó dùng cho mật khẩu có chữ “Fuckoff”.) -->
-    <input id="loginPass" class="login-in" type="password" inputmode="numeric"
-           maxlength="12" placeholder="••••" aria-label="Mật khẩu đăng nhập" autocomplete="off">
+    <p class="login-sub">Nhập tài khoản và mật khẩu để mở ứng dụng</p>
+    <!-- 🔒 2026-11-18 (yêu cầu “tối đa chỉ được 5 tài khoản đăng nhập”): thêm ô TÀI KHOẢN ngay
+         TRÊN ô mật khẩu. Danh sách tối đa 5 tài khoản nằm ở hằng `LOGIN_ACCOUNTS` trong script
+         ngay dưới `#loginGate` — ⛔ đừng khai danh sách ở chỗ khác. -->
+    <input id="loginUser" class="login-in login-in-user" type="text" inputmode="text"
+           maxlength="24" placeholder="Tài khoản" aria-label="Tài khoản đăng nhập"
+           autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off">
+    <!-- ⚠️ 2026-11-18: BỎ `inputmode="numeric"` của ô mật khẩu — mật khẩu nay do người dùng tự
+         đặt, có thể có CHỮ; bàn phím số sẽ không gõ được chữ trên điện thoại. -->
+    <input id="loginPass" class="login-in" type="password"
+           maxlength="24" placeholder="••••" aria-label="Mật khẩu đăng nhập" autocomplete="off">
     <div id="loginErr" class="login-err" role="alert"></div>
     <button type="submit" class="login-btn">Đăng nhập</button>
   </form>
 </div>
 <script>
-/* 🔒 2026-11-10 — Mở khoá màn đăng nhập. Đổi mật khẩu: sửa ĐÚNG hằng LOGIN_PASS dưới đây.
+/* 🔒 2026-11-10 — Mở khoá màn đăng nhập. 2026-11-18: đổi sang **5 tài khoản** (tên + mật khẩu)
+   — sửa ĐÚNG mảng `LOGIN_ACCOUNTS` dưới đây.
    · Giống `CUT_PASS`/`cutUnlock` của “Xuất file cắt”: so `trim()` nên gõ dư dấu cách vẫn qua.
    · Mở khoá xong ghi `sessionStorage['qlno_login_v1'] = '1'` rồi gỡ lớp `login-locked`
      ⇒ app hiện ra, cuộn được (CSS khoá cuộn khi còn lớp đó).
    · Nếu vì lý do gì đó markup/CSS không khớp (không có `.login-locked`) thì hàm THOÁT NGAY,
      ⛔ không chặn nhầm app. */
 (function () {
-  var LOGIN_PASS = '2151';      /* 🔄 2026-11-10: 2151 → Fuckoff → **2151** (yêu cầu “cho mật khẩu đăng nhập là 2151”) */
-  /* 🔒 2026-11-16 (yêu cầu “cho máy tính nhận chỉ 1 mật khẩu 1475369, nhập 2151 sẽ không được”):
-     MÁY TÍNH chỉ nhận **1475369**, ĐIỆN THOẠI chỉ nhận **2151** — mỗi bên đúng 1 mã, KHÔNG dùng
-     chéo (máy tính gõ 2151 ⇒ “Mật khẩu không đúng”; điện thoại gõ 1475369 ⇒ cũng sai).
-     ⟳ 2026-11-16 (tiếp): nhận diện “máy tính” KHÔNG còn chỉ dựa vào chuột thật — laptop cảm ứng /
-     tablet có bàn phím bị `hover:none` nên trước đây bị xếp là điện thoại. Nay xét 4 dấu hiệu, chỉ
-     cần MỘT cái đúng là máy tính:
-       1. `body.force-desktop` — người dùng tự bật giao diện máy tính;
-       2. `window.innerWidth >= 1024` — màn hình rộng (PC, laptop, tablet nằm ngang);
-       3. `navigator.maxTouchPoints === 0` — máy KHÔNG có màn cảm ứng (PC/laptop thường);
-       4. `matchMedia('(hover: hover) and (pointer: fine)')` — có con trỏ chuột thật.
-     ⇒ Điện thoại (rộng < 1024, CÓ cảm ứng, `hover:none`) mới rơi vào nhánh `2151`.
-     ⚠️ Hàm chạy LẠI MỖI LẦN bấm “Đăng nhập” (không chốt lúc tải trang) ⇒ xoay ngang máy tính bảng
-     hay kéo rộng cửa sổ rồi mới nhập mã vẫn được nhận đúng.
-     ⛔ Đừng bỏ vế `laMayTinh()` ở điều kiện bên dưới (2 mã sẽ dùng lẫn được cho nhau). */
-  var LOGIN_PASS_PC = '1475369';
-  function laMayTinh() {
-    try {
-      if (document.body.classList.contains('force-desktop')) return true;
-      if (window.innerWidth >= 1024) return true;
-      if ((navigator.maxTouchPoints || 0) === 0) return true;
-      if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) return true;
-    } catch (e) {}
-    return false;
-  }
+  /* ══ 🔒 5 TÀI KHOẢN ĐĂNG NHẬP (2026-11-18 — yêu cầu “tối đa chỉ được 5 tài khoản đăng nhập”) ══
+     · SỬA TÊN và MẬT KHẨU ngay trong mảng dưới. TỐI ĐA **5 dòng**: `slice(0, 5)` cắt bỏ mọi dòng
+       thứ 6 trở đi ⇒ có thêm dòng cũng KHÔNG đăng nhập được (đúng yêu cầu “tối đa 5 tài khoản”).
+     · Tên tài khoản: tự cắt dấu cách 2 đầu + KHÔNG phân biệt hoa/thường. Mật khẩu: PHÂN BIỆT.
+     · 2 mã của bản “một mật khẩu” trước đây (máy tính `1475369`, điện thoại `2151`) nay là 2 tài
+       khoản **`pc`** và **`dt`** ⇒ người đang dùng vẫn vào được, chỉ cần gõ thêm tên tài khoản.
+       (Đã bỏ `laMayTinh()`: bản cũ chia mã theo thiết bị, nay mỗi tài khoản một mã.)
+     ⚠️ KHOÁ MỀM: danh sách nằm trong tệp HTML nên ai mở mã nguồn (Ctrl+U / F12) đều đọc được;
+       muốn chặn thật thì phải có server (xem mục 2026-11-18 trong AGENTS.md).
+     ⛔ Đừng khai lại danh sách ở chỗ khác và đừng bỏ `slice(0, 5)`. */
+  var LOGIN_ACCOUNTS = [
+    { u: 'pc',   p: '1475369' },
+    { u: 'dt',   p: '2151' },
+    { u: 'acc3', p: '3333' },
+    { u: 'acc4', p: '4444' },
+    { u: 'acc5', p: '5555' }
+  ].slice(0, 5).map(function (a) {
+    return { u: String(a.u == null ? "" : a.u).trim().toLowerCase(), p: String(a.p == null ? "" : a.p) };
+  });
   var LOGIN_KEY = 'qlno_login_v1';
   var gate = document.getElementById('loginGate');
   var form = document.getElementById('loginForm');
   var inp = document.getElementById('loginPass');
+  var inpUser = document.getElementById('loginUser');
   var err = document.getElementById('loginErr');
-  if (!gate || !form || !inp || !document.body.classList.contains('login-locked')) return;
+  if (!gate || !form || !inp || !inpUser || !document.body.classList.contains('login-locked')) return;
+
+  /* Khớp CẢ tên lẫn mật khẩu. Dùng CHUNG một câu báo lỗi cho mọi trường hợp sai để người
+     ngoài không dò được tài khoản nào có thật. */
+  function timTaiKhoan(u, p) {
+    for (var i = 0; i < LOGIN_ACCOUNTS.length; i++) {
+      if (LOGIN_ACCOUNTS[i].u === u && LOGIN_ACCOUNTS[i].p === p) return LOGIN_ACCOUNTS[i];
+    }
+    return null;
+  }
 
   function loi(msg) {
     if (err) err.textContent = msg;
-    inp.value = '';
-    try { inp.focus(); } catch (e) {}
+    inp.value = '';                    // xoá MẬT KHẨU, GIỮ tên tài khoản để gõ lại nhanh
+    try { (inpUser.value ? inp : inpUser).focus(); } catch (e) {}
   }
 
   form.addEventListener('submit', function (ev) {
     ev.preventDefault();
-    var v = String(inp.value == null ? '' : inp.value).trim();
-    if (!v) { loi('Vui lòng nhập mật khẩu'); return; }
-    /* 🔒 2026-11-16: máy tính CHỈ 1475369 · điện thoại CHỈ 2151 — không nhận chéo.
-       `laMayTinh()` gọi tại đây (mỗi lần bấm) để đúng cả khi vừa xoay/kéo rộng màn hình. */
-    var ok = laMayTinh() ? (v === LOGIN_PASS_PC) : (v === LOGIN_PASS);
-    if (!ok) { loi('Mật khẩu không đúng'); return; }
+    var u = String(inpUser.value == null ? '' : inpUser.value).trim().toLowerCase();
+    var p = String(inp.value == null ? '' : inp.value).trim();
+    if (!u) { loi('Vui lòng nhập tài khoản'); return; }
+    if (!p) { loi('Vui lòng nhập mật khẩu'); return; }
+    if (!timTaiKhoan(u, p)) { loi('Tài khoản hoặc mật khẩu không đúng'); return; }
     try { sessionStorage.setItem(LOGIN_KEY, '1'); } catch (e) {}
     if (err) err.textContent = '';
     inp.value = '';           // mở khoá xong thì xoá mã khỏi ô, không để lộ lại trong DOM
     document.body.classList.remove('login-locked');
   });
 
-  // Gõ lại là xoá dòng báo lỗi cho đỡ rối mắt.
+  // Gõ lại là xoá dòng báo lỗi cho đỡ rối mắt (áp cho CẢ 2 ô).
   inp.addEventListener('input', function () { if (err) err.textContent = ''; });
+  inpUser.addEventListener('input', function () { if (err) err.textContent = ''; });
 
-  try { inp.focus(); } catch (e) {}
+  try { inpUser.focus(); } catch (e) {}
 })();
 </script>
 
@@ -16495,13 +16511,8 @@ const CD_IC_LEDGER = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidde
   '<path d="M4.7 17.2c1.3 0 1.4-1.9 2.7-1.9s1.4 1.9 2.7 1.9 1.4-1.9 2.7-1.9 1.4 1.9 2.7 1.9" fill="none" stroke="#8f9cb4" stroke-width="1.5" stroke-linecap="round"/>' +
   '</svg>';
 
-/* Mã KH đang mở ở tấm “Chi tiết” — dùng cho “Chụp ảnh liên 1” (menu Xuất file cắt). Ghi ở
-   `showDetailRow` để lối vào từ menu biết đang nói về khách nào. */
-let _detailMa = '';
-
 function showDetailRow(r) {
   if (!r) return;
-  _detailMa = r.ma_khach_hang || '';
   document.getElementById('modalName').textContent = r.ten_khach_hang || 'Không có tên';
   document.getElementById('modalMa').textContent = r.ma_khach_hang;
 
@@ -16621,7 +16632,7 @@ function cdCopy(btn) {
 //  · “Tổng số tiền” = tổng TẤT CẢ hoá đơn của khách (mọi đợt đều được tính).
 //  · ⛔ BA Ô TÍCH TRONG TẤM **CHỈ ĐỂ HIỂN THỊ** (người dùng chốt 2026-10-13h: “dấu tick chọn chỉ
 //    là ảnh hiển thị”) — KHÔNG còn là `<input type="checkbox">` ⇒ không bấm/gõ/tab được nữa, tổng
-//    tiền KHÔNG đổi theo ô tích. Cùng lựa chọn với nút đỏ “Tiếp tục thanh toán” và “Xem giấy báo”
+//    tiền KHÔNG đổi theo ô tích. Cùng lựa chọn với nút đỏ “Tiếp tục thanh toán”
 //    ở tấm này; xem chú thích CSS `.pay-cb` để biết vì sao bỏ hẳn input.
 //  · ⟳ 2026-10-15: `.pay-name` (tên khách, chữ xanh như ảnh) **KHÔNG BẤM ĐƯỢC NỮA** — yêu cầu
 //    người dùng: “ẩn chức năng khi chạm vào tên kh mở bảng modal”. Gỡ `onclick` + xoá
@@ -16631,8 +16642,7 @@ function cdCopy(btn) {
 //    (`capturePayShot()` + `#shotModal`). Trước đây nó chỉ để hiển thị.
 //    ⟳ 2026-10-16f: chụp xong là **lưu thẳng xuống máy** (`shotSaveToDevice()`) — `#shotModal`
 //    thành đường dự phòng. (Khoảng 2026-10-16c có bản mở bảng chia sẻ; nay đã bỏ theo yêu cầu.)
-// ⛔ KHÔNG có dòng “ID hóa đơn” của ảnh (dữ liệu không có cột đó) và “Xem giấy báo” CHỈ ĐỂ HIỂN THỊ
-//    — người dùng đã chốt như vậy.
+// ⛔ KHÔNG có dòng “ID hóa đơn” của ảnh: dữ liệu không có cột đó (người dùng đã chốt bỏ).
 let _payRecs = [];   // ⛔ KHÔNG còn `_paySel`: ô tích đã thành hình hiển thị (2026-10-13h) nên không còn trạng thái chọn để theo dõi.
 
 // Icon mã QR của ảnh (3 ô định vị + 4 chấm) — vẽ tại chỗ vì sprite `#__icon-sprite` không có
@@ -16670,7 +16680,6 @@ function renderPay() {
       <div class="pay-inv-l2">
         <span class="pay-cb on" aria-hidden="true">${IC_CHECK}</span>
         <span class="pay-badge">HĐ tiền điện</span>
-        <span class="pay-notice" title="Chưa có dữ liệu giấy báo">Xem giấy báo</span>
       </div>
       <div class="pay-inv-amt">${fmtHtml(x.tien_no)} VNĐ</div>
     </div>`).join('');
@@ -17940,9 +17949,10 @@ function exportExcel(mode) {
    · Dùng lại NGUYÊN khung hộp chọn của app (`.lpcb-overlay`/`.lpcb-card`/`.lpsdt-act`/`.lpcb-btn`)
      ⇒ cùng nền, cùng nút viền xanh, cùng nút “Đóng”. ⛔ Đừng tạo bộ CSS mới cho hộp này.
    · Chạm nền hoặc “Đóng” = huỷ, ⛔ không xuất gì. */
-/* 🗑 2026-11-16 (yêu cầu “xoá tất cả liên quan đến giấy thông báo cắt điện, liên 1 liên 2”):
-   hộp này CHỈ còn 6 mục Excel (theo phạm vi in) + nút “Đóng”. Toàn bộ phần xuất “giấy thông báo
-   ngừng cấp điện” (2 liên, `buildGiayBaoHtml`, `exportMauFile`, ô `#cutMaKh`) đã xoá hẳn —
+/* 🗑 2026-11-16 + 2026-11-18 (yêu cầu “xoá tất cả liên quan đến giấy báo, con dấu đỏ, chữ ký”):
+   hộp này CHỈ còn 6 mục Excel (theo phạm vi in) + nút “Đóng”. Toàn bộ phần xuất tờ thông báo
+   (2 liên, mẫu có/không dấu, ô nhập mã KH, con dấu, chữ ký) đã xoá hẳn; 2026-11-18 xoá nốt biến
+   `_detailMa` (chỉ phục vụ chụp ảnh liên 1) và nhãn “Xem giấy báo” (`.pay-notice`) ở tấm thanh toán.
    ⛔ đừng dựng lại nếu chưa hỏi. */
 function cutMenuEl() {
   let ov = document.getElementById('cutBox');
@@ -18037,7 +18047,7 @@ function cutPick(mode) {
    ⇒ 6 mục y hệt hộp `#cutBox` nhưng gọi `exportExcel(mode)` (15 cột), ⛔ KHÔNG gọi `exportExcelCut`.
    Dùng lại NGUYÊN khung `.lpcb-overlay` / `.lpcb-card` / `.lpsdt-act` / `.lpcb-btn` của hộp Ghim và
    hộp Xuất file cắt ⇒ cùng một hệ giao diện, ⛔ đừng tạo CSS mới.
-   · KHÔNG có ô nhập mã KH (ô đó đã xoá cùng “File mẫu không dấu”).
+   · KHÔNG có ô nhập mã KH (chỉ thuộc mẫu in cũ, đã xoá).
    · `#exportBox` tách riêng khỏi `#cutBox` để 2 nút mở 2 hộp khác nhau, không giẫm id.
    🔁 Muốn bỏ menu: trả `onclick` của `#exportBtn` về `closeCfg(); exportExcel()`. */
 function exportMenuEl() {
