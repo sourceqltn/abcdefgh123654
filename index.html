@@ -9578,6 +9578,10 @@ body.light-mode .login-in:focus { border-color: #2563eb; }
    tên tài khoản chỉ giãn 1px cho dễ đọc. */
 .login-in + .login-in { margin-top: 10px; }
 .login-in-user { letter-spacing: 1px; }
+/* 📱 2026-11-19: ô MẬT KHẨU trên ĐIỆN THOẠI đổi sang `type="tel"` để trình duyệt bật BÀN PHÍM SỐ;
+   `type="tel"` KHÔNG tự che chữ ⇒ che bằng `-webkit-text-security` (Chrome/Safari). JS chỉ gắn lớp
+   này khi máy KHÔNG phải máy tính và trình duyệt hỗ trợ thuộc tính. ⛔ Máy tính không dùng lớp này. */
+.login-in-mask { -webkit-text-security: disc; }
 /* 2026-11-19 (yêu cầu “ở trên ô để chữ Tài khoản, bỏ chữ trong ô và cho icon user; ô dưới để
    chữ Mật khẩu và cũng cho icon trong ô”): NHÃN nằm TRÊN ô, placeholder TRONG ô đã bỏ, icon
    SVG nằm BÊN TRONG ô (đệm trái 46px để chữ không đè icon). Icon vẽ tại chỗ, ăn `currentColor`. */
@@ -9774,6 +9778,29 @@ body.light-mode .login-err { color: #dc2626; }
      Máy tính KHÔNG đổi (vẫn Tài khoản + Mật khẩu). */
   var fieldUser = inpUser.closest ? inpUser.closest('.login-field') : null;
   if (!_mayTinh && fieldUser) fieldUser.style.display = 'none';
+
+  /* 📱 2026-11-19: MẬT KHẨU TRÊN ĐIỆN THOẠI DÙNG BÀN PHÍM SỐ.
+     Yêu cầu: “hiển thị bàn phím số nhập mật khẩu trên điện thoại, không hiện bàn phím chữ”.
+     `type="password"` + `inputmode="numeric"` KHÔNG đủ trên iOS (iOS bỏ qua `inputmode` của ô mật
+     khẩu) ⇒ đổi hẳn sang `type="tel"` (mọi trình duyệt di động đều hiểu là bàn phím SỐ), rồi che
+     chữ bằng `-webkit-text-security: disc` (lớp `.login-in-mask`). Mật khẩu điện thoại CHỈ CÓ SỐ
+     (`2151`) nên bàn phím số không cản gì. Trình duyệt KHÔNG hỗ trợ che ⇒ GIỮ `password` (vẫn an
+     toàn, chỉ mất bàn phím số). ⛔ MÁY TÍNH KHÔNG ĐỔI (vẫn `password` + bàn phím chữ). */
+  if (!_mayTinh) {
+    var cheDuoc = false;
+    try {
+      cheDuoc = !!(window.CSS && window.CSS.supports &&
+                   window.CSS.supports('-webkit-text-security', 'disc'));
+    } catch (e) {}
+    if (cheDuoc) {
+      inp.type = 'tel';
+      if (inp.setAttribute) {
+        inp.setAttribute('inputmode', 'numeric');
+        inp.setAttribute('pattern', '[0-9]*');
+      }
+      if (inp.classList && inp.classList.add) inp.classList.add('login-in-mask');
+    }
+  }
 
   /* Khớp CẢ tên lẫn mật khẩu. Dùng CHUNG một câu báo lỗi cho mọi trường hợp sai để người
      ngoài không dò được tài khoản nào có thật. */
