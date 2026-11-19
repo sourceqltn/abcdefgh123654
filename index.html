@@ -8721,34 +8721,63 @@ body:not(.light-mode) .kh-card-top .kh-thang.multi-month { text-decoration-color
 .kh-thang { display: inline-flex; align-items: center; gap: 4px; }
 .kh-thang .ic { width: 14px; height: 14px; flex: 0 0 auto; opacity: 0.9; }
 
-/* 6) NÚT CHEVRON mở tấm “Chi tiết” — ⟳ 2026-10-28 (yêu cầu “cho … mũi tên ra sát viền”):
-   `right: 31px` → **12px**.
-   Vì sao 12: hàng tiền/tháng và nút 📷 đã được kéo ra sát mép (`margin-right: -18px`, mục 2a/6b)
-   ⇒ mép phải ICON 📷 cách mép thẻ ~14,3px. Chevron 18px nằm giữa nút 20px (dư 1px mỗi bên)
-   ⇒ `right: 12px` cho mép phải icon chevron cách mép thẻ **~13,3px** = thẳng cột với icon 📷
-   (lệch ~0,05px). Đo live 533px: 📷 icon right 501,33 · chevron icon right 501,28.
-   ⚠️ Nút chevron thò vào vùng nội dung ~15px (rãnh dự phòng chỉ 26px) — chỗ đó là khoảng
-   trống bên phải hàng mã KH nên KHÔNG đè chữ; nếu sau này thêm nội dung sát mép phải thì
-   phải nới `padding-right` của `.kh-card`. */
+/* 6) TAB **“TIỆN ÍCH”** Ở HÀNG SĐT (2026-11-19 — yêu cầu “dời nút mũi tên xuống cùng hàng sdt và
+   đổi nút mũi tên thành tab Tiện ích”).
+   · Nút `.kh-chev` KHÔNG còn `position: absolute` ở mép phải thẻ: nay là CON CUỐI của
+     `.kh-phone-row` (hàng SĐT — hàng cuối thẻ) và bám mép phải bằng `margin-left: auto`
+     (y hệt cách tab “Đường” từng làm).
+   · Không còn icon mũi tên: nút là TAB CHỮ **“Tiện ích”**, dùng ĐÚNG dáng tab “Đường” cũ
+     (`border-radius: 999px`, viền 1px, chữ 16px/600, nền trong suốt) ⇒ không sinh thêm kiểu nút mới.
+   · Bấm vẫn gọi `openCardFn(this)` → hộp `#cardFnBox` (3 mục Copy tin nhắn / Xem thông báo KH /
+     Xem chi tiết KH). ⛔ Đừng gắn lại `openCardDetail` trực tiếp.
+   ⚠️ Rãnh phải 26px của `.kh-card` GIỮ NGUYÊN (mọi hàng chữ đang canh theo nó) ⇒ tab nằm trong
+     vùng nội dung, không cần `right`/`top` nữa. ⛔ Đừng khai lại `position: absolute`.
+   ⚠️ `@media print` vẫn ẩn `.kh-chev` — tab “Tiện ích” không mang dữ liệu nên không in. */
+/* ⟳ Cùng ngày (yêu cầu “cho kích cỡ cao bằng viền sdt, và màu viền như sdt”): tab cao BẰNG
+   viên SĐT và viền CÙNG màu viên SĐT.
+   · Cao bằng: KHÔNG khai `height` nữa — dùng ĐÚNG bộ số đo của `.kh-phone` (`padding: 2px 10px`,
+     `font-size: var(--fs-card)`, `line-height` mặc định, viền 1px) ⇒ hai viên cùng **27,2px** ở
+     mọi bề rộng; ⛔ đừng ghim `height` cứng (đổi `--fs-card` là lệch ngay).
+   · Viền: đo viên SĐT ở CẢ 2 theme = **`#2563eb`** (rule `… .kh-phone { border-color: #2563eb
+     !important }`) ⇒ tab dùng đúng mã đó cho cả 2 theme; ⛔ đừng trả về xám `rgba(148,163,184,0.8)` /
+     `#64748b` (bản trước). */
 .kh-chev {
-  position: absolute;
-  top: 50%; right: 12px;
-  transform: translateY(-50%);
-  width: 20px; height: 40px;
-  display: flex; align-items: center; justify-content: center;
-  padding: 0;
-  border: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  /* ⟳ 2026-11-19 (yêu cầu “cho nút tiện ích nằm sát về bên phải”): `margin-right: -18px` — ĐÚNG
+     mẹo của cột tiền (`.kh-tien-col`) và nút 📷 cũ: thẻ có đệm phải 26px, kéo âm 18px ⇒ mép phải
+     tab cách mép thẻ **~8,8px**, thẳng cột với viên số tiền ở góc trên. ⛔ Đừng giảm đệm phải của
+     `.kh-card` (mọi hàng chữ đang canh theo nó), và ⛔ đừng vượt -20px (tab sẽ lọt ra ngoài thẻ). */
+  margin-right: -18px;
+  padding: 2px 10px;
+  border: 1px solid #2563eb;
   border-radius: 999px;
   background: transparent;
-  color: #94a3b8;
+  color: #93c5fd;
+  font-family: 'Inter', sans-serif;
+  font-size: var(--fs-card);
+  font-weight: 600;
+  white-space: nowrap;
   cursor: pointer;
-  z-index: 4;
   -webkit-tap-highlight-color: transparent;
 }
-body.light-mode .kh-chev { color: #64748b; }
-.kh-chev .ic { width: 18px; height: 18px; }
-.kh-chev:active { background: rgba(148,163,184,0.16); }
-.kh-chev:focus-visible { outline: 2px solid #3b82f6; outline-offset: -4px; }
+body.light-mode .kh-chev { color: #1d4ed8; border-color: #2563eb; }
+.kh-chev:active { background: rgba(37,99,235,0.18); }
+.kh-chev:focus-visible { outline: 2px solid #3b82f6; outline-offset: 2px; }
+
+/* ══ 2026-11-19 — Ô TÊN + Ô SỐ TIỀN TRÊN THẺ KHÔNG CÒN LÀ CHỖ BẤM ═══════════════════════════
+   Yêu cầu: “kiểm tra ô tên khách và ô số tiền trên thẻ sau khi bỏ chạm: nếu vẫn còn hiện con trỏ
+   tay thì bỏ nốt cho khỏi hiểu nhầm là bấm được”.
+   Đo trước khi sửa (localhost:62077): `.kh-name` và `.kh-tien` đều ra **`cursor: pointer`** —
+   hai ô KHÔNG khai `cursor` riêng, chúng HƯỞNG `cursor: pointer` của `.kh-card` (thẻ còn nhấn 2
+   lần = đánh dấu) ⇒ phải khai đích danh `cursor: default` cho 2 ô trong THẺ.
+   ⚠️ Chỉ THẺ: ô tên trên BẢNG (`.cell-tenkh`) VẪN chạm = copy nên giữ `pointer` ⇒ ⛔ đừng dùng
+   selector trần `.kh-name`/`.kh-tien` (sẽ đụng bảng và cả `.tien-no`).
+   ⚠️ Không đụng `:active`/nền của 2 ô — chỉ con trỏ chuột (yêu cầu chỉ nói con trỏ tay). */
+body .kh-card .kh-name,
+body .kh-card .kh-tien { cursor: default; }
 
 /* 6b) HÀNG TIỀN + THÁNG CŨNG RA SÁT VIỀN (cùng yêu cầu “ra sát viền”, 2026-10-28):
    `.kh-card-top` là flex `space-between` ⇒ `margin-right: -18px` trên cột PHẢI làm mép phải
@@ -9457,12 +9486,17 @@ body.light-mode .kh-swipe > .kh-card { background-color: var(--light-card); }
   body:not(.light-mode).force-desktop .table-view tbody td:nth-child(6) { background: #253650; }
 }
 
-/* ═══ 🔒 MÀN HÌNH ĐĂNG NHẬP — 5 TÀI KHOẢN (2026-11-10; 2026-11-18) ═════════════════════════
+/* ═══ 🔒 MÀN HÌNH ĐĂNG NHẬP — 1 TÀI KHOẢN (2026-11-10; 2026-11-18; 2026-11-19) ══════════
    Yêu cầu người dùng: “đặt mật khẩu để đăng nhập, mật khẩu là 2151” → đổi thành “Fuckoff”
    → rồi **đổi LẠI 2151** (yêu cầu “cho mật khẩu đăng nhập là 2151”, cùng ngày).
-   · ⟳ 2026-11-18 (yêu cầu “tối đa chỉ được 5 tài khoản đăng nhập”): form có **2 ô** (TÀI KHOẢN +
-     mật khẩu), danh sách tối đa **5** tài khoản ở hằng `LOGIN_ACCOUNTS`; không còn một mật khẩu
-     dùng chung và không còn chia mã theo thiết bị (`laMayTinh`).
+   · ⟳ 2026-11-19 (yêu cầu “bỏ hết các tên đăng nhập khác và chỉ giữ lại 1 cái tên đăng nhập là
+     acc2151, mk là 2151”): chỉ còn **1** tài khoản `acc2151` / `2151` trong hằng
+     `LOGIN_ACCOUNTS`; đã xoá 5 tài khoản cũ và bộ lọc theo thiết bị ⇒ máy tính và điện thoại
+     dùng chung một tài khoản.
+   · ⟳ 2026-11-19 (tiếp — yêu cầu “khi sử dụng trên máy tính thì điền tên đăng nhập là pc và mk
+     là 1475369 mới đăng nhập được, còn các tên khác thì không được”): **2 tài khoản, chia theo
+     thiết bị** — MÁY TÍNH chỉ `pc` / `1475369`; ĐIỆN THOẠI chỉ `acc2151` / `2151` (bộ lọc
+     `laMayTinh()` xem trong script dưới `#loginGate`).
    · Màn che phủ TOÀN trang, `z-index` cao hơn MỌI lớp nổi của app (modal 300 · toast 4000 ·
      hộp nhấn-giữ 4200) ⇒ chưa nhập đúng mã thì KHÔNG có đường lọt vào app.
    · MẶC ĐỊNH `display:none`; chỉ hiện khi `<body>` có lớp `login-locked`. Lớp đó do script
@@ -9472,8 +9506,8 @@ body.light-mode .kh-swipe > .kh-card { background-color: var(--light-card); }
    · Nền dùng token `--page-bg` nên tự đúng ở cả 2 theme (light `#eef1f4` · dark `#0b0d12`).
    · Nút “Đăng nhập” dùng ĐÚNG bộ màu của nút “Chọn tệp Excel khác” (nền `#1d4ed8`, chữ
      trắng, hover `#1e40af`, active `#1e3a8a`) ⇒ cả app giữ một tông xanh.
-   ⚠️ Đổi/thêm tài khoản: sửa mảng `LOGIN_ACCOUNTS` trong script ngay dưới markup `#loginGate`
-   (tối đa 5 dòng, xem 2026-11-18).
+   ⚠️ Đổi tài khoản: sửa mảng `LOGIN_ACCOUNTS` trong script ngay dưới markup `#loginGate`.
+     Hiện chỉ có 1 dòng `{ u: 'acc2151', p: '2151' }` (2026-11-19).
    ⛔ Đây là khoá MỀM (mã nằm trong `index.html`) — đủ chặn người dùng thường, KHÔNG phải
      bảo mật thật; muốn thật thì phải có server. */
 body.login-locked { overflow: hidden; }
@@ -9622,9 +9656,8 @@ body.light-mode .login-err { color: #dc2626; }
     </div>
     <h2 class="login-title">abcdefghz</h2>
     <p class="login-sub">Nhập tài khoản và mật khẩu để mở ứng dụng</p>
-    <!-- 🔒 2026-11-18 (yêu cầu “tối đa chỉ được 5 tài khoản đăng nhập”): thêm ô TÀI KHOẢN ngay
-         TRÊN ô mật khẩu. Danh sách tối đa 5 tài khoản nằm ở hằng `LOGIN_ACCOUNTS` trong script
-         ngay dưới `#loginGate` — ⛔ đừng khai danh sách ở chỗ khác. -->
+    <!-- 🔒 2026-11-18: ô TÀI KHOẢN nằm ngay TRÊN ô mật khẩu. Danh sách (nay 1 tài khoản)
+         nằm ở hằng `LOGIN_ACCOUNTS` trong script ngay dưới `#loginGate` — ⛔ đừng khai ở chỗ khác. -->
     <input id="loginUser" class="login-in login-in-user" type="text" inputmode="text"
            maxlength="24" placeholder="Tài khoản" aria-label="Tài khoản đăng nhập"
            autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off">
@@ -9637,33 +9670,55 @@ body.light-mode .login-err { color: #dc2626; }
   </form>
 </div>
 <script>
-/* 🔒 2026-11-10 — Mở khoá màn đăng nhập. 2026-11-18: đổi sang **5 tài khoản** (tên + mật khẩu)
-   — sửa ĐÚNG mảng `LOGIN_ACCOUNTS` dưới đây.
+/* 🔒 2026-11-10 — Mở khoá màn đăng nhập. 2026-11-19: **2 tài khoản chia theo thiết bị** —
+   máy tính `pc` / `1475369`, điện thoại `acc2151` / `2151` — sửa ĐÚNG mảng `LOGIN_ACCOUNTS` dưới đây.
    · Giống `CUT_PASS`/`cutUnlock` của “Xuất file cắt”: so `trim()` nên gõ dư dấu cách vẫn qua.
    · Mở khoá xong ghi `sessionStorage['qlno_login_v1'] = '1'` rồi gỡ lớp `login-locked`
      ⇒ app hiện ra, cuộn được (CSS khoá cuộn khi còn lớp đó).
    · Nếu vì lý do gì đó markup/CSS không khớp (không có `.login-locked`) thì hàm THOÁT NGAY,
      ⛔ không chặn nhầm app. */
 (function () {
-  /* ══ 🔒 5 TÀI KHOẢN ĐĂNG NHẬP (2026-11-18 — yêu cầu “tối đa chỉ được 5 tài khoản đăng nhập”) ══
-     · SỬA TÊN và MẬT KHẨU ngay trong mảng dưới. TỐI ĐA **5 dòng**: `slice(0, 5)` cắt bỏ mọi dòng
-       thứ 6 trở đi ⇒ có thêm dòng cũng KHÔNG đăng nhập được (đúng yêu cầu “tối đa 5 tài khoản”).
-     · Tên tài khoản: tự cắt dấu cách 2 đầu + KHÔNG phân biệt hoa/thường. Mật khẩu: PHÂN BIỆT.
-     · 2 mã của bản “một mật khẩu” trước đây (máy tính `1475369`, điện thoại `2151`) nay là 2 tài
-       khoản **`pc`** và **`dt`** ⇒ người đang dùng vẫn vào được, chỉ cần gõ thêm tên tài khoản.
-       (Đã bỏ `laMayTinh()`: bản cũ chia mã theo thiết bị, nay mỗi tài khoản một mã.)
-     ⚠️ KHOÁ MỀM: danh sách nằm trong tệp HTML nên ai mở mã nguồn (Ctrl+U / F12) đều đọc được;
-       muốn chặn thật thì phải có server (xem mục 2026-11-18 trong AGENTS.md).
-     ⛔ Đừng khai lại danh sách ở chỗ khác và đừng bỏ `slice(0, 5)`. */
+  /* ══ 🔒 2 TÀI KHOẢN, CHIA THEO THIẾT BỊ (2026-11-19 — bản thứ 2 trong ngày) ══
+     Yêu cầu: “khi sử dụng trên máy tính thì điền tên đăng nhập là **pc** và mk là **1475369**
+     mới đăng nhập được, còn các tên khác thì không được đăng nhập” (kết hợp yêu cầu trước đó:
+     “bỏ hết các tên đăng nhập khác và chỉ giữ lại 1 cái tên đăng nhập là acc2151, mk là 2151”).
+     ⇒ DANH SÁCH CHỈ CÒN 2 DÒNG, mỗi thiết bị chỉ thấy 1 dòng của mình:
+       · MÁY TÍNH (chuột thật): CHỈ `pc` / `1475369` — `acc2151`, `dt`, `acc3`… đều báo lỗi.
+       · ĐIỆN THOẠI (cảm ứng): CHỈ `acc2151` / `2151` — gõ `pc` trên điện thoại cũng báo lỗi.
+     · Nhận biết bằng `pointer`/`hover` (`laMayTinh()`): chuột thật = `pointer: fine` + `hover:
+       hover`; điện thoại = `pointer: coarse`. Trình duyệt không trả lời được thì lùi về
+       `navigator.maxTouchPoints` (0 = máy tính). ⛔ Đừng đổi sang xét bề rộng màn hình — thu nhỏ
+       cửa sổ trên máy tính vẫn phải là máy tính.
+     · Tên tài khoản: tự cắt dấu cách 2 đầu + KHÔNG phân biệt hoa/thường (`  PC  ` vẫn qua).
+       Mật khẩu: PHÂN BIỆT hoa/thường.
+     ⚠️ KHOÁ MỀM: tài khoản nằm trong tệp HTML nên ai mở mã nguồn (Ctrl+U / F12) đều đọc được;
+       muốn chặn thật thì phải có server.
+     ⛔ Đừng khai lại tài khoản ở chỗ khác và đừng bỏ bộ lọc thiết bị (bỏ đi là mọi tên đều
+        vào được). */
   var LOGIN_ACCOUNTS = [
-    { u: 'pc',   p: '1475369' },
-    { u: 'dt',   p: '2151' },
-    { u: 'acc3', p: '3333' },
-    { u: 'acc4', p: '4444' },
-    { u: 'acc5', p: '5555' }
-  ].slice(0, 5).map(function (a) {
-    return { u: String(a.u == null ? "" : a.u).trim().toLowerCase(), p: String(a.p == null ? "" : a.p) };
+    { u: 'pc',      p: '1475369', mayTinh: true  },
+    { u: 'acc2151', p: '2151',    mayTinh: false }
+  ].map(function (a) {
+    return {
+      u: String(a.u == null ? "" : a.u).trim().toLowerCase(),
+      p: String(a.p == null ? "" : a.p),
+      mayTinh: !!a.mayTinh
+    };
   });
+  /* Máy tính = có chuột thật. Không xác định được thì coi là máy tính (mặc định an toàn hơn:
+     tài khoản `pc` khó đoán hơn `acc2151`, và đúng ý “trên máy tính chỉ pc”). */
+  function laMayTinh() {
+    try {
+      var mm = window.matchMedia;
+      if (mm) {
+        if (mm('(hover: hover) and (pointer: fine)').matches) return true;
+        if (mm('(pointer: coarse)').matches) return false;
+      }
+    } catch (e) {}
+    return !(navigator.maxTouchPoints > 0);
+  }
+  var _mayTinh = laMayTinh();
+  var dsDangNhap = LOGIN_ACCOUNTS.filter(function (a) { return a.mayTinh === _mayTinh; });
   var LOGIN_KEY = 'qlno_login_v1';
   var gate = document.getElementById('loginGate');
   var form = document.getElementById('loginForm');
@@ -9675,8 +9730,8 @@ body.light-mode .login-err { color: #dc2626; }
   /* Khớp CẢ tên lẫn mật khẩu. Dùng CHUNG một câu báo lỗi cho mọi trường hợp sai để người
      ngoài không dò được tài khoản nào có thật. */
   function timTaiKhoan(u, p) {
-    for (var i = 0; i < LOGIN_ACCOUNTS.length; i++) {
-      if (LOGIN_ACCOUNTS[i].u === u && LOGIN_ACCOUNTS[i].p === p) return LOGIN_ACCOUNTS[i];
+    for (var i = 0; i < dsDangNhap.length; i++) {
+      if (dsDangNhap[i].u === u && dsDangNhap[i].p === p) return dsDangNhap[i];
     }
     return null;
   }
@@ -15252,7 +15307,7 @@ function renderCards(q='') {
              ⛔ KHÔNG dùng dấu backtick trong chú thích NÀY: nó nằm TRONG một template literal,
              backtick sẽ đóng chuỗi sớm và cả script không parse được. -->
         <div class="kh-idcol">
-        <div class="kh-name" style="cursor:pointer" onclick="lpTenTap(this)">${hi(r.ten_khach_hang,q)||'—'}</div>
+        <div class="kh-name">${hi(r.ten_khach_hang,q)||'—'}</div>
         </div>
         <div class="kh-tien-col">
           <!-- ⚠️ LỚP pay-tap + onclick = CHẠM VÀO SỐ TIỀN LÀ MỞ TẤM “Thanh toán cho điểm dùng điện”
@@ -15261,7 +15316,7 @@ function renderCards(q='') {
                vào chuỗi ở đây: openPayPanel(this) tự đọc closest('[data-ma]').
                ⛔ KHÔNG viết dấu backtick trong chú thích NÀY — nó nằm TRONG một template literal,
                backtick sẽ đóng chuỗi sớm và cả script không parse được (đã sập đúng một lần). -->
-          <div class="kh-tien pay-tap${r.tien_no >= 5000000 ? ' high' : (r.tien_no >= 1000000 ? ' mid' : ' low')}" onclick="event.stopPropagation();openPayPanel(this)">${fmtHtml(r.tien_no)}</div>
+          <div class="kh-tien${r.tien_no >= 5000000 ? ' high' : (r.tien_no >= 1000000 ? ' mid' : ' low')}">${fmtHtml(r.tien_no)}</div>
           <!-- ⟳ 2026-10-28: nút CHỤP ẢNH KHÔNG còn ở cột phải — nay nằm trong hàng SĐT
                (.kh-phone-row), góc dưới-phải thẻ. Cột phải chỉ còn SỐ TIỀN + THÁNG.
                ⛔ KHÔNG viết dấu backtick trong chú thích này (nó nằm TRONG template literal). -->
@@ -15375,8 +15430,7 @@ function renderCards(q='') {
            · Ảnh khách vẫn mở được từ tấm “Chi tiết” (nút “Ảnh” → photoTap).
            · Bỏ luôn lớp has-dir trên khối — CSS .kh-phone-row.has-dir nay không còn phần tử nào dùng.
            ⛔ KHÔNG viết dấu backtick trong chú thích này (nó nằm TRONG một template literal). -->
-      <div class="kh-phone-row">${phone ? `<a class="kh-phone" href="tel:${phone.replace(/[^0-9+]/g,'')}" onclick="event.stopPropagation()"><svg class="ic" width="15" height="15" aria-hidden="true" style="margin-right:2px"><use href="#i-call"/></svg>${hi(phone,q)}</a>` : ''}</div>
-      <button type="button" class="kh-chev" data-ma="${esc(r.ma_khach_hang)}" onclick="event.stopPropagation();openCardDetail(this)" ondblclick="event.stopPropagation()" aria-label="Xem chi tiết khách hàng"><svg class="ic" width="18" height="18" aria-hidden="true"><use href="#i-chev"></use></svg></button>
+      <div class="kh-phone-row">${phone ? `<a class="kh-phone" href="tel:${phone.replace(/[^0-9+]/g,'')}" onclick="event.stopPropagation()"><svg class="ic" width="15" height="15" aria-hidden="true" style="margin-right:2px"><use href="#i-call"/></svg>${hi(phone,q)}</a>` : ''}<button type="button" class="kh-chev" data-ma="${esc(r.ma_khach_hang)}" onclick="event.stopPropagation();openCardFn(this)" ondblclick="event.stopPropagation()" aria-label="Mở menu Tiện ích của khách">Tiện ích</button></div>
     </div>`;
   }).join('');
   fitGhiChuInputs();
@@ -16468,6 +16522,99 @@ function openCardDetail(el) {
   if (!ma) return;
   const r = allData.find(x => x.ma_khach_hang === ma) || filtered.find(x => x.ma_khach_hang === ma);
   if (r) showDetailRow(r);
+}
+
+/* ══ 🗂 2026-11-19 — MŨI TÊN (CHEVRON) TRÊN THẺ ⇒ MENU CHỨC NĂNG ═════════════════════════
+   Yêu cầu người dùng: “khi chọn mũi tên trên thẻ card sẽ hiển thị menu chức năng các mục là
+   Copy tin nhắn, Xem thông báo KH, Xem chi tiết KH; mục copy tin nhắn sẽ THAY THẾ chọn tên KH để
+   copy, mục Xem thông báo KH sẽ THAY THẾ chỗ chọn số tiền, mục Xem chi tiết KH sẽ hiện bảng
+   chi tiết”.
+   · Nút `.kh-chev` trước đây gọi thẳng `openCardDetail` (mở tấm Chi tiết) — nay gọi `openCardFn`.
+   · 3 mục = 3 HÀM ĐÃ CÓ, không viết bản thứ hai:
+       Copy tin nhắn     → `lpCopy(card)`        (cùng câu nhắc nợ của `lpCopyText`)
+       Xem thông báo KH  → `openPayPanel(card)`  (tấm “Thanh toán cho điểm dùng điện”)
+       Xem chi tiết KH   → `openCardDetail(card)` (tấm Chi tiết)
+   · Vì “thay thế”, 2 cử chỉ cũ trên thẻ đã GỠ (chỉ trên THẺ, bảng giữ nguyên):
+       - tên khách (`onclick="lpTenTap(this)"`) KHÔNG còn copy khi chạm;
+       - số tiền (`.kh-tien.pay-tap` + `onclick`) KHÔNG còn mở tấm thanh toán khi chạm.
+     ⛔ Đừng gắn lại 2 cử chỉ đó khi chưa hỏi — người dùng đã chốt là dời vào menu.
+   · Hộp dùng lại NGUYÊN khung `.lpcb-overlay` / `.lpcb-card` / `.lpcb-title` / `.lpsdt-act` /
+     `.lpcb-btn` của hộp SĐT + hộp Ghim ⇒ cùng kiểu nền trắng, nút viền xanh, nút “Đóng”.
+     Dựng MỘT LẦN rồi dùng lại (giống `#lpSdtBox`), không dựng lại mỗi lần mở.
+   · Đóng: nút “Đóng”, chạm nền, hoặc mở tấm khác. Mã KH giữ ở biến `_cardFnMa` (⛔ không nhét mã
+     vào chuỗi HTML/`onclick` — mã sổ/KH là dữ liệu tệp, có thể chứa dấu nháy). */
+let _cardFnMa = '';
+
+function openCardFn(el) {
+  const card = el && el.closest ? el.closest('.kh-card[data-ma]') : null;
+  if (!card) return;
+  const ma = card.dataset.ma || '';
+  if (!ma) return;
+  _cardFnMa = ma;
+  const r = allData.find(x => x.ma_khach_hang === ma) || filtered.find(x => x.ma_khach_hang === ma);
+  const ov = cardFnEl();
+  ov.querySelector('.card-fn-name').textContent = (r && r.ten_khach_hang) ? r.ten_khach_hang : ma;
+  ov.classList.add('on');
+  try { if (navigator.vibrate) navigator.vibrate(12); } catch (e) {}
+}
+
+function cardFnEl() {
+  let ov = document.getElementById('cardFnBox');
+  if (ov) return ov;
+  ov = document.createElement('div');
+  ov.id = 'cardFnBox';
+  ov.className = 'lpcb-overlay';
+  /* ⛔ Không dùng backtick trong chuỗi dựng hộp này: tệp giữ lối viết cũ cho khối hộp. */
+  ov.innerHTML = '<div class="lpcb-card">' +
+      '<div class="lpcb-title">Chức năng <b class="card-fn-name"></b></div>' +
+      '<button class="lpsdt-act" data-act="copy" type="button">' +
+        '<svg class="ic" width="16" height="16" aria-hidden="true" style="vertical-align:middle">' +
+        '<use href="#i-copy"/></svg>Copy tin nhắn</button>' +
+      '<button class="lpsdt-act" data-act="notice" type="button">' +
+        '<svg class="ic" width="16" height="16" aria-hidden="true" style="vertical-align:middle">' +
+        '<use href="#i-receipt"/></svg>Xem thông báo KH</button>' +
+      '<button class="lpsdt-act" data-act="detail" type="button">' +
+        '<svg class="ic" width="16" height="16" aria-hidden="true" style="vertical-align:middle">' +
+        '<use href="#i-note"/></svg>Xem chi tiết KH</button>' +
+      '<button class="lpcb-btn" type="button">Đóng</button>' +
+    '</div>';
+  ov.addEventListener('click', function (e) { if (e.target === ov) cardFnClose(); });
+  ov.querySelector('.lpcb-btn').addEventListener('click', cardFnClose);
+  ov.querySelector('[data-act="copy"]').addEventListener('click', cardFnCopy);
+  ov.querySelector('[data-act="notice"]').addEventListener('click', cardFnNotice);
+  ov.querySelector('[data-act="detail"]').addEventListener('click', cardFnDetail);
+  document.body.appendChild(ov);
+  return ov;
+}
+
+function cardFnClose() {
+  const ov = document.getElementById('cardFnBox');
+  if (ov) ov.classList.remove('on');
+}
+
+/* Thẻ đang gọi menu — tìm lại theo mã KH (KHÔNG dựa vào `this` đã mất sau khi hộp dựng lại). */
+function cardFnCard() {
+  if (!_cardFnMa) return null;
+  const sel = window.CSS && CSS.escape ? CSS.escape(_cardFnMa) : _cardFnMa;
+  return document.querySelector('.kh-card[data-ma="' + sel + '"]');
+}
+
+function cardFnCopy() {
+  const card = cardFnCard();
+  cardFnClose();
+  if (card) lpCopy(card);
+}
+
+function cardFnNotice() {
+  const card = cardFnCard();
+  cardFnClose();
+  if (card) openPayPanel(card);
+}
+
+function cardFnDetail() {
+  const card = cardFnCard();
+  cardFnClose();
+  if (card) openCardDetail(card);
 }
 
 /* 🗓️ HAI ICON CỦA THẺ CHI TIẾT — VẼ TAY BẰNG SVG, ⛔ KHÔNG DÙNG EMOJI.
@@ -18595,7 +18742,7 @@ function clearNvScope() {
 
 // Esc đóng lần lượt: tấm “Thanh toán…” (nếu đang mở) rồi tới tấm “Chi tiết”.
 // ⟳ 2026-10-19: bỏ `lpCloseMaBox()` (hộp nhấn-giữ mã KH đã gỡ hẳn — gọi vào là ReferenceError).
-document.addEventListener('keydown', e => { if (e.key==='Escape') { lpCloseCopyBox(); lpCloseSdtBox(); pinMenuClose(); exportMenuClose(); cutMenuClose(); closeShotDirect(); photoCloseDirect(); closeKyDirect(); closeAdv(); closeSoList(); closePayDirect(); closeModalDirect(); } });
+document.addEventListener('keydown', e => { if (e.key==='Escape') { cardFnClose(); lpCloseCopyBox(); lpCloseSdtBox(); pinMenuClose(); exportMenuClose(); cutMenuClose(); closeShotDirect(); photoCloseDirect(); closeKyDirect(); closeAdv(); closeSoList(); closePayDirect(); closeModalDirect(); } });
 
 // ── COLUMN RESIZE (desktop) ────────────────
 // ⚠️ v1 → v2 khi ĐỔI THỨ TỰ CỘT. Bản đồ độ rộng lưu theo **chỉ số cột**, nên bản lưu từ v1
