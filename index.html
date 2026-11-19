@@ -1144,7 +1144,8 @@ body.light-mode .kh-danhso .ic { color: #1f2937; }   /* ⟳ 2026-11-03 (cùng y�
    vừa đủ để “đậm hơn” mà không tranh chấp thứ bậc.
    ⚠️ 2026-10-03e: nền header light đổi sang navy `#12233f` ⇒ `--hdr-text` light nay `#e2e8f0`
    (màu/độ đậm `600` vẫn giữ; chỉ đổi màu theo yêu cầu “nền xanh đậm”). */
-.header-title { font-size: 18px; font-weight: 600; letter-spacing: 0.3px; color: var(--hdr-text); }
+/* 🗑 2026-11-19: rule `.header-title` ĐÃ XOÁ cùng markup (dòng “abcdefghz” trên header). Khối chú
+   thích ngay trên nói về tiêu đề đó — giữ nguyên để tra lịch sử. ⛔ Đừng khai lại rule. */
 .header-sub { font-size: 13px; color: var(--hdr-sub); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 280px; font-weight: 400; }
 
 /* ⏰ ĐỒNG HỒ Ở HEADER — nay là KHỐI HIỂN THỊ, KHÔNG còn là nút.
@@ -9497,6 +9498,9 @@ body.light-mode .kh-swipe > .kh-card { background-color: var(--light-card); }
      là 1475369 mới đăng nhập được, còn các tên khác thì không được”): **2 tài khoản, chia theo
      thiết bị** — MÁY TÍNH chỉ `pc` / `1475369`; ĐIỆN THOẠI chỉ `acc2151` / `2151` (bộ lọc
      `laMayTinh()` xem trong script dưới `#loginGate`).
+   · ⟳ 2026-11-19 (tiếp 2 — yêu cầu “bỏ tên đăng nhập acc2151, chỉ giữ lại mật khẩu là 2151, trên
+     điện thoại, máy tính giữ nguyên”): ĐIỆN THOẠI **chỉ còn ô Mật khẩu** — ô “Tài khoản” (cả nhãn
+     lẫn ô) bị giấu bằng `display:none` và chỉ xét mật khẩu `2151`. MÁY TÍNH KHÔNG đổi.
    · Màn che phủ TOÀN trang, `z-index` cao hơn MỌI lớp nổi của app (modal 300 · toast 4000 ·
      hộp nhấn-giữ 4200) ⇒ chưa nhập đúng mã thì KHÔNG có đường lọt vào app.
    · MẶC ĐỊNH `display:none`; chỉ hiện khi `<body>` có lớp `login-locked`. Lớp đó do script
@@ -9507,7 +9511,8 @@ body.light-mode .kh-swipe > .kh-card { background-color: var(--light-card); }
    · Nút “Đăng nhập” dùng ĐÚNG bộ màu của nút “Chọn tệp Excel khác” (nền `#1d4ed8`, chữ
      trắng, hover `#1e40af`, active `#1e3a8a`) ⇒ cả app giữ một tông xanh.
    ⚠️ Đổi tài khoản: sửa mảng `LOGIN_ACCOUNTS` trong script ngay dưới markup `#loginGate`.
-     Hiện chỉ có 1 dòng `{ u: 'acc2151', p: '2151' }` (2026-11-19).
+     Hiện có 2 dòng (2026-11-19): `{ u: 'pc', p: '1475369', mayTinh: true }` (máy tính) và
+     `{ u: '', p: '2151', mayTinh: false }` (điện thoại — KHÔNG tên đăng nhập, chỉ mật khẩu).
    ⛔ Đây là khoá MỀM (mã nằm trong `index.html`) — đủ chặn người dùng thường, KHÔNG phải
      bảo mật thật; muốn thật thì phải có server. */
 body.login-locked { overflow: hidden; }
@@ -9519,9 +9524,10 @@ body.login-locked { overflow: hidden; }
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: var(--page-bg);
+  background: radial-gradient(110vw 70vh at 85% 6%, rgba(37,99,235,.38), rgba(37,99,235,0) 62%), radial-gradient(90vw 70vh at 8% 96%, rgba(14,165,233,.26), rgba(14,165,233,0) 60%), linear-gradient(165deg, #0b1220 0%, #14294a 55%, #0a1830 100%);
 }
 body.login-locked .login-gate { display: flex; }
+body.light-mode .login-gate { background: radial-gradient(120vw 80vh at 12% 8%, rgba(191,219,254,.95), rgba(191,219,254,0) 60%), radial-gradient(100vw 70vh at 88% 92%, rgba(199,210,254,.8), rgba(199,210,254,0) 62%), linear-gradient(160deg, #eef4ff 0%, #dbeafe 52%, #eff6ff 100%); }
 .login-card {
   width: 100%;
   max-width: 330px;
@@ -9542,16 +9548,14 @@ body.light-mode .login-card {
 }
 .login-ico { color: #7db4ff; line-height: 0; margin-bottom: 10px; }
 body.light-mode .login-ico { color: #2563eb; }
-.login-title { margin: 0 0 4px; font-size: 21px; font-weight: 700; letter-spacing: .3px; color: #e2e8f0; }
+.login-title { margin: 0 0 16px; font-size: 21px; font-weight: 700; letter-spacing: .3px; color: #e2e8f0; }
 body.light-mode .login-title { color: #0f172a; }
-.login-sub { margin: 0 0 16px; font-size: 13.5px; color: #94a3b8; }
-body.light-mode .login-sub { color: #64748b; }
 .login-in {
   width: 100%;
   box-sizing: border-box;
   height: 46px;
   padding: 0 14px;
-  border: 1px solid #334155;
+  border: 1px solid #64748b;
   border-radius: 10px;
   background: #12161f;
   color: #e2e8f0;
@@ -9560,11 +9564,30 @@ body.light-mode .login-sub { color: #64748b; }
   text-align: center;
   letter-spacing: 4px;
 }
-body.light-mode .login-in { border-color: #cbd5e1; background: #f8fafc; color: #0f172a; }
+body.light-mode .login-in { border-color: #94a3b8; background: #f8fafc; color: #0f172a; }
+/* 2026-11-19 (người dùng đồng ý đề xuất): VIỀN FOCUS XANH của app thay vòng focus mặc định của
+   trình duyệt (cam 0,8px, lệch tông). Viền ô cũng đậm lên (`#334155`→**`#64748b`** dark,
+   `#cbd5e1`→**`#94a3b8`** light) vì nền ô gần như trùng nền thẻ ⇒ 1,75:1 → ~3,2:1 (dark). ⛔ Đừng bỏ
+   `outline:none` mà không thay bằng vòng khác (mất dấu hiệu focus khi dùng bàn phím). */
+.login-in:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,.25); }
+body:not(.light-mode) .login-in:focus { border-color: #60a5fa; box-shadow: 0 0 0 3px rgba(96,165,250,.28); }
+/* ⚠️ `body.light-mode .login-in` có độ đặc hiệu (0,2,1) > `.login-in:focus` (0,2,0) ⇒ PHẢI khai
+   lại viền focus theo đúng cặp lớp đó, nếu không viền focus bị đè về `#94a3b8`. */
+body.light-mode .login-in:focus { border-color: #2563eb; }
 /* 🔒 2026-11-18: ô TÀI KHOẢN mới — cách ô mật khẩu 10px; ô mật khẩu giãn chữ 4px nên
    tên tài khoản chỉ giãn 1px cho dễ đọc. */
 .login-in + .login-in { margin-top: 10px; }
 .login-in-user { letter-spacing: 1px; }
+/* 2026-11-19 (yêu cầu “ở trên ô để chữ Tài khoản, bỏ chữ trong ô và cho icon user; ô dưới để
+   chữ Mật khẩu và cũng cho icon trong ô”): NHÃN nằm TRÊN ô, placeholder TRONG ô đã bỏ, icon
+   SVG nằm BÊN TRONG ô (đệm trái 46px để chữ không đè icon). Icon vẽ tại chỗ, ăn `currentColor`. */
+.login-field { margin-bottom: 12px; text-align: left; }
+.login-lab { display: block; margin: 0 0 6px 2px; font-size: 13px; font-weight: 600; letter-spacing: .2px; color: #94a3b8; }
+body.light-mode .login-lab { color: #475569; }
+.login-in-wrap { position: relative; }
+.login-in-wrap .login-in { padding-left: 46px; padding-right: 14px; text-align: left; }
+.login-in-ico { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); line-height: 0; color: #94a3b8; pointer-events: none; }
+body.light-mode .login-in-ico { color: #64748b; }
 .login-err { min-height: 18px; margin: 8px 0 4px; font-size: 12.5px; color: #f87171; }
 body.light-mode .login-err { color: #dc2626; }
 .login-btn {
@@ -9649,42 +9672,62 @@ body.light-mode .login-err { color: #dc2626; }
     <div class="login-ico">
       <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor"
            stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <rect x="4" y="10.5" width="16" height="10.5" rx="2.2"></rect>
-        <path d="M8 10.5V7.6a4 4 0 0 1 8 0v2.9"></path>
-        <circle cx="12" cy="15.8" r="1.15"></circle>
+        <circle cx="12" cy="8" r="4"></circle>
+        <path d="M4.5 20a7.5 7.5 0 0 1 15 0"></path>
       </svg>
     </div>
-    <h2 class="login-title">abcdefghz</h2>
-    <p class="login-sub">Nhập tài khoản và mật khẩu để mở ứng dụng</p>
+    <h2 class="login-title">Hello!</h2>
     <!-- 🔒 2026-11-18: ô TÀI KHOẢN nằm ngay TRÊN ô mật khẩu. Danh sách (nay 1 tài khoản)
          nằm ở hằng `LOGIN_ACCOUNTS` trong script ngay dưới `#loginGate` — ⛔ đừng khai ở chỗ khác. -->
-    <input id="loginUser" class="login-in login-in-user" type="text" inputmode="text"
-           maxlength="24" placeholder="Tài khoản" aria-label="Tài khoản đăng nhập"
-           autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off">
+    <div class="login-field">
+      <label class="login-lab" for="loginUser">Tài khoản</label>
+      <div class="login-in-wrap">
+        <svg class="login-in-ico" width="18" height="18" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <circle cx="12" cy="8" r="4"></circle>
+          <path d="M4.5 20a7.5 7.5 0 0 1 15 0"></path>
+        </svg>
+        <input id="loginUser" class="login-in login-in-user" type="text" inputmode="text"
+               maxlength="24" aria-label="Tài khoản đăng nhập"
+               autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off">
+      </div>
+    </div>
     <!-- ⚠️ 2026-11-18: BỎ `inputmode="numeric"` của ô mật khẩu — mật khẩu nay do người dùng tự
          đặt, có thể có CHỮ; bàn phím số sẽ không gõ được chữ trên điện thoại. -->
-    <input id="loginPass" class="login-in" type="password"
-           maxlength="24" placeholder="••••" aria-label="Mật khẩu đăng nhập" autocomplete="off">
+    <div class="login-field">
+      <label class="login-lab" for="loginPass">Mật khẩu</label>
+      <div class="login-in-wrap">
+        <svg class="login-in-ico" width="18" height="18" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="4.5" y="10" width="15" height="10" rx="2.5"></rect>
+          <path d="M8.5 10V7.5a3.5 3.5 0 0 1 7 0V10"></path>
+        </svg>
+        <input id="loginPass" class="login-in" type="password"
+               maxlength="24" aria-label="Mật khẩu đăng nhập" autocomplete="off">
+      </div>
+    </div>
     <div id="loginErr" class="login-err" role="alert"></div>
     <button type="submit" class="login-btn">Đăng nhập</button>
   </form>
 </div>
 <script>
-/* 🔒 2026-11-10 — Mở khoá màn đăng nhập. 2026-11-19: **2 tài khoản chia theo thiết bị** —
-   máy tính `pc` / `1475369`, điện thoại `acc2151` / `2151` — sửa ĐÚNG mảng `LOGIN_ACCOUNTS` dưới đây.
+/* 🔒 2026-11-10 — Mở khoá màn đăng nhập. 2026-11-19: **chia theo thiết bị** —
+   máy tính `pc` / `1475369`; điện thoại **CHỈ MẬT KHẨU `2151`** (ô Tài khoản bị giấu).
+   Sửa ĐÚNG mảng `LOGIN_ACCOUNTS` dưới đây.
    · Giống `CUT_PASS`/`cutUnlock` của “Xuất file cắt”: so `trim()` nên gõ dư dấu cách vẫn qua.
    · Mở khoá xong ghi `sessionStorage['qlno_login_v1'] = '1'` rồi gỡ lớp `login-locked`
      ⇒ app hiện ra, cuộn được (CSS khoá cuộn khi còn lớp đó).
    · Nếu vì lý do gì đó markup/CSS không khớp (không có `.login-locked`) thì hàm THOÁT NGAY,
      ⛔ không chặn nhầm app. */
 (function () {
-  /* ══ 🔒 2 TÀI KHOẢN, CHIA THEO THIẾT BỊ (2026-11-19 — bản thứ 2 trong ngày) ══
+  /* ══ 🔒 CHIA THEO THIẾT BỊ (2026-11-19 — cập nhật cuối ngày) ══
      Yêu cầu: “khi sử dụng trên máy tính thì điền tên đăng nhập là **pc** và mk là **1475369**
-     mới đăng nhập được, còn các tên khác thì không được đăng nhập” (kết hợp yêu cầu trước đó:
-     “bỏ hết các tên đăng nhập khác và chỉ giữ lại 1 cái tên đăng nhập là acc2151, mk là 2151”).
+     mới đăng nhập được, còn các tên khác thì không được đăng nhập”, rồi (2026-11-19 tiếp):
+     “bỏ tên đăng nhập acc2151, chỉ giữ lại mật khẩu là 2151, trên điện thoại, máy tính giữ nguyên”.
      ⇒ DANH SÁCH CHỈ CÒN 2 DÒNG, mỗi thiết bị chỉ thấy 1 dòng của mình:
-       · MÁY TÍNH (chuột thật): CHỈ `pc` / `1475369` — `acc2151`, `dt`, `acc3`… đều báo lỗi.
-       · ĐIỆN THOẠI (cảm ứng): CHỈ `acc2151` / `2151` — gõ `pc` trên điện thoại cũng báo lỗi.
+       · MÁY TÍNH (chuột thật): CHỈ `pc` / `1475369` — vẫn 2 ô như cũ, mọi tên khác báo lỗi.
+       · ĐIỆN THOẠI (cảm ứng): **CHỈ MẬT KHẨU `2151`** (dòng có `u: ''`) — ô “Tài khoản” bị
+         GIẤU HẲN (`display:none`) ngay dưới đây nên không nhập được tên nào.
      · Nhận biết bằng `pointer`/`hover` (`laMayTinh()`): chuột thật = `pointer: fine` + `hover:
        hover`; điện thoại = `pointer: coarse`. Trình duyệt không trả lời được thì lùi về
        `navigator.maxTouchPoints` (0 = máy tính). ⛔ Đừng đổi sang xét bề rộng màn hình — thu nhỏ
@@ -9697,7 +9740,7 @@ body.light-mode .login-err { color: #dc2626; }
         vào được). */
   var LOGIN_ACCOUNTS = [
     { u: 'pc',      p: '1475369', mayTinh: true  },
-    { u: 'acc2151', p: '2151',    mayTinh: false }
+    { u: '',        p: '2151',    mayTinh: false }   // 📱 KHÔNG tên đăng nhập — chỉ mật khẩu
   ].map(function (a) {
     return {
       u: String(a.u == null ? "" : a.u).trim().toLowerCase(),
@@ -9706,7 +9749,7 @@ body.light-mode .login-err { color: #dc2626; }
     };
   });
   /* Máy tính = có chuột thật. Không xác định được thì coi là máy tính (mặc định an toàn hơn:
-     tài khoản `pc` khó đoán hơn `acc2151`, và đúng ý “trên máy tính chỉ pc”). */
+     mật khẩu `1475369` khó đoán hơn `2151`, và đúng ý “trên máy tính chỉ pc”). */
   function laMayTinh() {
     try {
       var mm = window.matchMedia;
@@ -9727,6 +9770,11 @@ body.light-mode .login-err { color: #dc2626; }
   var err = document.getElementById('loginErr');
   if (!gate || !form || !inp || !inpUser || !document.body.classList.contains('login-locked')) return;
 
+  /* 📱 ĐIỆN THOẠI: giấu HẲN ô “Tài khoản” (cả nhãn lẫn ô) — màn đăng nhập chỉ còn Mật khẩu.
+     Máy tính KHÔNG đổi (vẫn Tài khoản + Mật khẩu). */
+  var fieldUser = inpUser.closest ? inpUser.closest('.login-field') : null;
+  if (!_mayTinh && fieldUser) fieldUser.style.display = 'none';
+
   /* Khớp CẢ tên lẫn mật khẩu. Dùng CHUNG một câu báo lỗi cho mọi trường hợp sai để người
      ngoài không dò được tài khoản nào có thật. */
   function timTaiKhoan(u, p) {
@@ -9739,16 +9787,22 @@ body.light-mode .login-err { color: #dc2626; }
   function loi(msg) {
     if (err) err.textContent = msg;
     inp.value = '';                    // xoá MẬT KHẨU, GIỮ tên tài khoản để gõ lại nhanh
-    try { (inpUser.value ? inp : inpUser).focus(); } catch (e) {}
+    try { (_mayTinh && !inpUser.value ? inpUser : inp).focus(); } catch (e) {}
   }
 
   form.addEventListener('submit', function (ev) {
     ev.preventDefault();
     var u = String(inpUser.value == null ? '' : inpUser.value).trim().toLowerCase();
     var p = String(inp.value == null ? '' : inp.value).trim();
-    if (!u) { loi('Vui lòng nhập tài khoản'); return; }
-    if (!p) { loi('Vui lòng nhập mật khẩu'); return; }
-    if (!timTaiKhoan(u, p)) { loi('Tài khoản hoặc mật khẩu không đúng'); return; }
+    if (_mayTinh) {
+      if (!u) { loi('Vui lòng nhập tài khoản'); return; }
+      if (!p) { loi('Vui lòng nhập mật khẩu'); return; }
+      if (!timTaiKhoan(u, p)) { loi('Tài khoản hoặc mật khẩu không đúng'); return; }
+    } else {
+      /* 📱 điện thoại: CHỈ xét MẬT KHẨU (ô tài khoản đã bị giấu ⇒ tên gõ vào vô nghĩa). */
+      if (!p) { loi('Vui lòng nhập mật khẩu'); return; }
+      if (!timTaiKhoan('', p)) { loi('Mật khẩu không đúng'); return; }
+    }
     try { sessionStorage.setItem(LOGIN_KEY, '1'); } catch (e) {}
     if (err) err.textContent = '';
     inp.value = '';           // mở khoá xong thì xoá mã khỏi ô, không để lộ lại trong DOM
@@ -9759,7 +9813,7 @@ body.light-mode .login-err { color: #dc2626; }
   inp.addEventListener('input', function () { if (err) err.textContent = ''; });
   inpUser.addEventListener('input', function () { if (err) err.textContent = ''; });
 
-  try { inpUser.focus(); } catch (e) {}
+  try { (_mayTinh ? inpUser : inp).focus(); } catch (e) {}
 })();
 </script>
 
@@ -10060,8 +10114,8 @@ body.light-mode .login-err { color: #dc2626; }
       </svg>
     </button>
     <div class="title-wrap">
-
-      <div class="header-title">abcdefghz</div>
+      <!-- 🗑 2026-11-19: BỎ dòng tiêu đề “abcdefghz” (yêu cầu “bỏ hàng chữ này”, ảnh = đúng dòng
+           chữ navy đậm ở header). Header nay chỉ còn TÊN TỆP (`.header-sub`). ⛔ Đừng dựng lại tiêu đề. -->
       <div class="header-sub" id="fileLabel">Chưa có dữ liệu</div>
     </div>
   </div>
