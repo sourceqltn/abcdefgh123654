@@ -406,10 +406,18 @@
      ⇒ nhãn **19px là 225px**, chỉ còn 2px dự. Vì vậy nhãn chốt ở 18px (kém `--ctl-fs` đúng 1px
      là do hàng này chật nhất, không phải do lệch quy ước). Hàng này có `min-width: 0` nên nếu
      vượt thì nó XUỐNG DÒNG chứ không bị cắt — nhưng tấm cao thêm. */
-  --fs-cfg-title: 18px;
-  --fs-cfg-lb: 18px;
-  --fs-cfg-val: 16px;
-  --fs-cfg-btn: 14px;
+  /* ⟳ 2026-11-21 (yêu cầu “cho bảng này to hơn”, ảnh = tấm Cài đặt `#cfg` trên điện thoại):
+     TĂNG 1 NẤC nữa so với lượt “cho các chữ này to hơn”:
+       tiêu đề `18 → 20px` · nhãn hàng `18 → 19px` · giá trị đang dùng `16 → 17px`
+       · chữ trong nút `14 → 15px`.
+     ⚙️ ĐO LẠI (không đoán): ở 375px trở lên MỌI hàng vẫn 1 DÒNG (nhãn 23px, tấm cao 492px);
+     ở 360px cũng 1 dòng; từ 340px trở xuống 2 hàng TRƯỢT đã có sẵn từ trước (hàng “Cỡ chữ” /
+     “Mức nền” có thanh trượt) — bản mới chỉ thêm đúng 1 hàng trượt ở 303–340px, tấm vẫn cuộn
+     được (`max-height: 92vh`) nên không mất nội dung. ⛔ Đừng vượt 20px nhãn khi chưa đo lại. */
+  --fs-cfg-title: 20px;
+  --fs-cfg-lb: 19px;
+  --fs-cfg-val: 17px;
+  --fs-cfg-btn: 15px;
 
   /* ── BẢNG MÀU ICON (nguồn DUY NHẤT) ───────────────────────────────────────
      Icon trong sprite `#__icon-sprite` chỉ tham chiếu các biến này, KHÔNG viết mã màu
@@ -1146,7 +1154,12 @@ body.light-mode .kh-danhso .ic { color: #1f2937; }   /* ⟳ 2026-11-03 (cùng y�
    (màu/độ đậm `600` vẫn giữ; chỉ đổi màu theo yêu cầu “nền xanh đậm”). */
 /* 🗑 2026-11-19: rule `.header-title` ĐÃ XOÁ cùng markup (dòng “abcdefghz” trên header). Khối chú
    thích ngay trên nói về tiêu đề đó — giữ nguyên để tra lịch sử. ⛔ Đừng khai lại rule. */
-.header-sub { font-size: 13px; color: var(--hdr-sub); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 280px; font-weight: 400; }
+/* ⟳ 2026-11-21 (yêu cầu “cho chữ này to hơn”, ảnh = tên tệp `DS_2026-11-16.xlsx` trên header):
+   cỡ chữ **13px → 16px** (+23%), `max-width` **280px → 310px** (chữ TO HƠN ⇒ cùng chuỗi cần
+   nhiều chỗ hơn, nới ra mới không hiện `…` sớm hơn trước). Header cao CỐ ĐỊNH 56px, `.header-sub`
+   1 dòng (~19px) + `margin-top: 2px` vẫn nằm gọn ⇒ không phải sửa `height` của `.header`.
+   ⛔ Đừng vượt ~20px mà không đo lại: khối chữ + viên đồng hồ bên phải có trần 56px riêng. */
+.header-sub { font-size: 16px; color: var(--hdr-sub); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 310px; font-weight: 400; }
 
 /* ⏰ ĐỒNG HỒ Ở HEADER — nay là KHỐI HIỂN THỊ, KHÔNG còn là nút.
    Lý do: yêu cầu “cho thêm 1 nút cài đặt và bỏ tất cả các nút vào đó” (người dùng chốt
@@ -5269,6 +5282,11 @@ body.light-mode .kh-ghichu-row::after { background: rgba(37,99,235,0.45); }   /*
   text-overflow: ellipsis;
   -webkit-user-select: text;
   user-select: text;
+  /* 2026-11-21 (yêu cầu "cho mục ghi chú mặc định viết chữ in hoa"): ghi chú MẶC ĐỊNH IN HOA.
+     `text-transform` đổi HÌNH CHỮ ngay khi gõ; `saveGhiChu()` cũng LƯU chữ hoa ⇒ bản copy tin
+     nhắn, ô trên BẢNG và tệp Excel xuất ra đều in hoa. ⛔ Dữ liệu cũ chưa sửa lần nào: chỉ đổi
+     hình chữ, giá trị gốc trong dữ liệu vẫn giữ nguyên. */
+  text-transform: uppercase;
 }
 .kh-ghichu-input::placeholder { color: #94a3b8; opacity: 1; }
 /* ⛔ KHÔNG còn rule `:focus` cho ô ghi chú: focus cũ tô nền `rgba(59,130,246,0.05)` + viền xanh
@@ -5278,7 +5296,7 @@ body.light-mode .kh-ghichu-input::placeholder { color: #64748b; opacity: 1; }
 /* `min-width` phải co được theo cột: ở panel CSS 320px cột giá trị của hàng chỉ còn ~183px,
    để `min-width: 200px` cứng thì ô ghi chú trong modal **thò ra 17px** khỏi hàng.
    `min(200px, 100%)` giữ nguyên 200px ở mọi bề rộng đủ chỗ, chỉ co lại khi cột hẹp hơn. */
-.ghi-chu-input { background: rgba(71,85,105,0.35); border: 1.5px solid #3b82f6; border-radius: 6px; padding: 6px 10px; color: #ffffff; font-size: 17px; font-weight: 400; font-family: 'Inter', sans-serif; width: 100%; min-width: min(200px, 100%); outline: none; resize: vertical; }
+.ghi-chu-input { background: rgba(71,85,105,0.35); border: 1.5px solid #3b82f6; border-radius: 6px; padding: 6px 10px; color: #ffffff; font-size: 17px; font-weight: 400; font-family: 'Inter', sans-serif; width: 100%; min-width: min(200px, 100%); outline: none; resize: vertical; text-transform: uppercase; }   /* 2026-11-21: ghi chú in hoa — cùng yêu cầu với `.kh-ghichu-input` */
 .ghi-chu-input::placeholder { color: #94a3b8; opacity: 1; }
 .ghi-chu-input:not(:placeholder-shown) { color: #ffffff; }
 body.light-mode .ghi-chu-input { color: #1f2937; background: #f1f5f9; border: 1.5px solid #3b82f6; }
@@ -5926,7 +5944,7 @@ body.light-mode .table-view .ma-kh { color: #475569; }
 body.light-mode .cell-abc { color: #475569; }
 .cell-old-ky { color: #fdba74; font-weight: 500; font-size: 14px; white-space: nowrap; }
 body.light-mode .cell-old-ky { color: #c2410c; }
-.ghi-chu-table { background: transparent; border: 1.5px solid #3b82f6; border-radius: 4px; padding: 2px 6px; color: #ffffff; font-size: 12px; font-family: 'Inter', sans-serif; width: 100%; min-width: 120px; outline: none; max-width: 100%; overflow: visible; }
+.ghi-chu-table { background: transparent; border: 1.5px solid #3b82f6; border-radius: 4px; padding: 2px 6px; color: #ffffff; font-size: 12px; font-family: 'Inter', sans-serif; width: 100%; min-width: 120px; outline: none; max-width: 100%; overflow: visible; text-transform: uppercase; }   /* 2026-11-21: ghi chú in hoa — cùng yêu cầu với `.kh-ghichu-input` */
 .ghi-chu-table:not(:placeholder-shown) { color: #ffffff; }
 .ghi-chu-table:focus { border-color: #60a5fa; background: rgba(71,85,105,0.35); }
 .ghi-chu-table::placeholder { color: #94a3b8; opacity: 1; }
@@ -7335,7 +7353,7 @@ body.force-desktop .table-view { display: block; }
   .sort-btn .sort-arrow { width: 16px; height: 16px; }
   .sort-btn .sort-ico { width: 17px; height: 17px; }
   .sort-label { font-size: var(--ctl-fs); }
-  .header-sub { max-width: 300px; }
+  .header-sub { max-width: 340px; }   /* ⟳ 2026-11-21: 300 → 340px (tên tệp nay 16px, cần thêm chỗ trước khi bị `…`) */
   /* Desktop: data 14px */
   tbody td { font-size: var(--fs-tb-desk); padding: 4px 8px; }
   /* ⇢ 2026-11-06 (yêu cầu “khi di chuột đến hàng nào trên máy tính thì hàng đó hiển thị màu xanh
@@ -8756,7 +8774,13 @@ body:not(.light-mode) .kh-card-top .kh-thang.multi-month { text-decoration-color
   border: 1px solid #2563eb;
   border-radius: 999px;
   background: transparent;
-  color: #93c5fd;
+  /* ⟳ 2026-11-21 (yêu cầu “cho màu chữ giống mã sổ”, ảnh = tab “Tiện ích” đang xanh nhạt):
+     CHỮ đổi về ĐÚNG màu chữ **mã sổ** (`.kh-sogcs`) — dark `#93c5fd` → **`#b4c1d2`**, light
+     `#1d4ed8` → **`#1e293b`** (ĐO LIVE `getComputedStyle(.kh-card .kh-sogcs)`: dark
+     `rgb(180,193,210)` · light `rgb(30,41,59)`). Viền 1px **GIỮ `#2563eb`** (y như tab “Đường” cũ)
+     — chỉ đổi MÀU CHỮ như yêu cầu. ⚠️ Ở mức nền “Rất sáng” mã sổ đổi sang `#a8b6c9` ⇒ có rule
+     đi kèm ngay dưới, đừng bỏ (lệch một nấc là tab khác tông mã sổ). */
+  color: #b4c1d2;
   font-family: 'Inter', sans-serif;
   font-size: var(--fs-card);
   font-weight: 600;
@@ -8764,7 +8788,10 @@ body:not(.light-mode) .kh-card-top .kh-thang.multi-month { text-decoration-color
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
-body.light-mode .kh-chev { color: #1d4ed8; border-color: #2563eb; }
+body.light-mode .kh-chev { color: #1e293b; border-color: #2563eb; }
+/* Cùng nấc “Rất sáng” với mã sổ (`body:not(.light-mode)[data-surface-dark="ratsang"] .kh-sogcs
+   { color: #a8b6c9 }` ở khối “BÙ CHỮ CHO MỨC RẤT SÁNG”): thiếu dòng này thì tab tối hơn mã sổ. */
+body:not(.light-mode)[data-surface-dark="ratsang"] .kh-chev { color: #a8b6c9; }
 .kh-chev:active { background: rgba(37,99,235,0.18); }
 .kh-chev:focus-visible { outline: 2px solid #3b82f6; outline-offset: 2px; }
 
@@ -10234,7 +10261,7 @@ body.light-mode .login-err { color: #dc2626; }
                  chừa chỗ bằng `padding-left: 40px` (icon `left: 12px` + 18px) — đổi cỡ icon
                  là chữ trong ô xê dịch. -->
             <span class="search-icon" aria-hidden="true"><svg class="ic" width="18" height="18" aria-hidden="true"><use href="#i-search"/></svg></span>
-            <input type="text" id="searchInput" placeholder="Tìm tên, mã KH, SĐT, địa chỉ..." oninput="handleSearch()" autocomplete="off" autocorrect="off" autocapitalize="off">
+            <input type="text" id="searchInput" placeholder="Tìm kiếm..." oninput="handleSearch()" autocomplete="off" autocorrect="off" autocapitalize="off">
             <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
           </div>
           <!-- ⟳ 2026-10-25 (yêu cầu “di chuyển nút lọc xuống kế nút cài đặt”): nút phễu
@@ -11046,22 +11073,12 @@ body.light-mode .login-err { color: #dc2626; }
     <button id="viewBtn" class="view-btn" onclick="toggleViewMode(); closeCfg()" data-tip="Xem dạng máy tính" aria-label="Xem dạng máy tính"><svg class="ic" width="20" height="20" aria-hidden="true"><use href="#i-monitor"/></svg></button>
   </div>
 
-  <!-- 4a. 🔎 BỘ LỌC — ⟳ 2026-10-28 (yêu cầu “cho nút lọc nằm trong nút cài đặt”): nút phễu
-       `#advBtn` nay nằm TRONG tấm Cài đặt và mở tấm “Lọc theo yêu cầu” (`openAdv()`).
-       ⚠️ PHẢI giữ đúng id `advBtn`: `advOnState()` (JS) tìm theo id này để bật `data-active="1"`
-       khi đang có bộ lọc nâng cao ⇒ đổi id là mất luôn dấu hiệu “đang lọc”.
-       ⚠️ `closeCfg()` TRƯỚC `openAdv()`: hai tấm đều `position: fixed` và đều khoá cuộn trang —
-       mở chồng nhau thì tấm lọc nằm dưới, bấm ra ngoài là đóng nhầm tấm.
-       Hàng này dùng lại đúng hệ hình của “Dạng xem” (`.cfg-row` + `.view-btn`) nên nút cao bằng
-       các control khác trong tấm. -->
-  <div class="cfg-row">
-    <span class="cfg-lb">Bộ lọc<i class="cfg-val" id="cfgAdvVal">Theo yêu cầu</i></span>
-    <!-- ⚠️ Dùng `.cfg-btn` (KHÔNG dùng `.view-btn`): `.view-btn` mặc định `display: none` và chỉ
-         được JS bật cho riêng `#viewBtn` khi có dữ liệu ⇒ nút phễu sẽ vô hình (đã đo đúng lỗi này:
-         width/height = 0). `.cfg-btn` là bộ hình đang hiện của tấm Cài đặt (nút ⚙ ở đây, nút
-         chuyển sáng/tối). -->
-    <button id="advBtn" class="cfg-btn" type="button" onclick="closeCfg(); openAdv()" data-tip="Lọc theo yêu cầu" aria-label="Lọc theo yêu cầu"><svg class="ic" width="20" height="20" aria-hidden="true"><use href="#i-filter"/></svg></button>
-  </div>
+  <!-- 🗑 2026-11-21 — HÀNG “BỘ LỌC · Theo yêu cầu” ĐÃ XOÁ KHỎI TẤM CÀI ĐẶT (yêu cầu “bỏ lọc
+       theo yêu cầu”, ảnh = đúng hàng “Bộ lọc · Theo yêu cầu” + nút phễu bên phải).
+       ⇒ Không còn nút phễu nào mở tấm “Lọc theo yêu cầu” (`#advModal`) nữa. Tấm đó + toàn bộ
+       hàm `openAdv`/`advApply`/`advConds`… vẫn nằm nguyên trong tệp (dead code, giống mục
+       “khoá mềm” khác) — các hàm đều tự kiểm tra phần tử null nên KHÔNG lỗi khi thiếu `#advBtn`.
+       ⛔ Đừng dựng lại hàng này / đừng gắn nút phễu vào chỗ khác khi chưa hỏi. -->
 
   <!-- ⟳ HÀNG “SẮP XẾP” ĐÃ XOÁ KHỎI TẤM theo yêu cầu “đưa nút danh số và tiền nợ về chỗ cũ”:
        2 tab `#sortDanhSo` / `#sortTienNo` nay nằm lại ở HÀNG SẮP XẾP trong `.toolbar` — đúng
@@ -12296,7 +12313,11 @@ function selectNhom(val) {
        ngoặc bằng regex (⛔ đừng slice cứng); hàm lỗi / không ra chữ ⇒ lùi về tên đầy đủ.
        ⚠️ `title` VẪN giữ tên đầy đủ, và `#filterNhom.value` KHÔNG đổi (vẫn `ma_nhom` gốc) nên
        bộ lọc + `applyFilters` chạy y như cũ. */
-    const displayVal = (maNhomVietTat(fullVal).replace(/^\((.*)\)$/, '$1') || fullVal);
+    /* 🔤 2026-11-21 (yêu cầu “đổi thành tên nhân viên đầy đủ”): nhãn ô lọc khi ĐÃ CHỌN nhân
+       viên cũng in **TÊN ĐẦY ĐỦ** (bản 2026-11-10 in viết tắt PTTT/BTD…) — cho khớp danh sách
+       trong `initFilters`. Ô hẹp thì nhãn tự CẮT bằng ellipsis (`fitFilterLabel`), `title` vẫn
+       giữ đủ tên. */
+    const displayVal = fullVal;
     // ⚠️ `esc()` vì tên nhân viên là dữ liệu Excel — nhét thẳng vào `innerHTML` như trước là
     // hở lỗi (tên chứa `<` sẽ phá markup nhãn).
     // Chấm màu theo màu nhóm thay cho emoji 👨‍💼 (emoji nhiều màu, không đổi theo nhóm được)
@@ -13078,8 +13099,13 @@ function initFilters() {
     // · `data-val` VẪN là mã nhóm gốc (giá trị bộ lọc) — chỉ CHỮ HIỂN THỊ đổi.
     // · `title` GIỮ TÊN ĐẦY ĐỦ ⇒ rê chuột (hoặc nhấn-giữ trên điện thoại) vẫn đọc được đủ tên.
     // ⚠️ Tên đầy đủ là dữ liệu Excel ⇒ luôn qua `esc()` khi nhét vào `innerHTML`.
+    /* 🔤 2026-11-21 (yêu cầu “đổi thành tên nhân viên đầy đủ”, ảnh = danh sách BTD/BTTL/CD/
+       DVD/HTTD/LGM…): ĐẢO LẠI cách hiển thị của 2026-11-10 — danh sách nhân viên (và nhãn ô
+       lọc, xem `selectNhom`) nay in **TÊN ĐẦY ĐỦ** trong dữ liệu (“Bùi Thanh Dũng”), KHÔNG còn
+       viết tắt chữ cái đầu. `data-val` vẫn là `ma_nhom` gốc (giá trị bộ lọc) ⇒ lọc không đổi.
+       `maNhomVietTat()` VẪN giữ trong tệp (còn dùng ở 1 chỗ khác + giữ lịch sử) — ⛔ đừng xoá.
+       ⚠️ Tên đầy đủ là dữ liệu Excel ⇒ luôn qua `esc()` khi nhét vào `innerHTML`. */
     const displayName = nhomFullNameMap[v] || v;
-    const shortName = (maNhomVietTat(displayName).replace(/^\((.*)\)$/, '$1') || v);
     d.title = displayName;
     /* ⟳ 2026-10-26 (yêu cầu “đổi icon này cho tất cả tên nhân viên”, ảnh = icon 👥 của nhãn
        “Nhân viên”): MỌI dòng tên nhân viên trong danh sách nay đứng trước bằng ĐÚNG icon
@@ -13087,7 +13113,7 @@ function initFilters() {
        ⚠️ GIỮ MÀU theo từng người (`nc` = `getNhomColor(v)`) — chỉ đổi HÌNH, để màu nhận diện
        của nhân viên (dùng cả ở badge bảng Tổng hợp) không bị mất.
        ⛔ `nhom-dot` VẪN còn dùng ở dải tab + ở nhãn lúc chưa chọn — đừng xoá rule CSS của nó. */
-    d.innerHTML = '<span style="color:' + nc + ';display:inline-flex;flex-shrink:0;align-items:center"><svg class="ic" width="19" height="19" aria-hidden="true"><use href="#i-people"/></svg></span> ' + esc(shortName);
+    d.innerHTML = '<span style="color:' + nc + ';display:inline-flex;flex-shrink:0;align-items:center"><svg class="ic" width="19" height="19" aria-hidden="true"><use href="#i-people"/></svg></span> ' + esc(displayName);
     dd.appendChild(d);
   });
 
@@ -13673,6 +13699,115 @@ function advConds() {
     min: a ? parseTienLoc(a.value) : null,
     max: b ? parseTienLoc(b.value) : null
   };
+}
+
+/* ══ ⚡ QUY TẮC GÕ TRONG Ô TÌM KIẾM (2026-11-21) ══════════════════════════════════════
+   Yêu cầu người dùng: “tôi muốn tìm kiếm tất cả các quy tắc ví dụ tu 2tr den 3tr, chu y 14”.
+   ⇒ Ô tìm kiếm ở thanh công cụ hiểu thêm LUẬT GÕ; phần chữ còn lại vẫn quét mọi trường như cũ:
+     · KHOẢNG TIỀN — so với **TỔNG nợ của KHÁCH** (y hệt 2 ô tiền của tấm “Lọc theo yêu cầu”):
+         “từ 2tr đến 3tr” · “tu 2tr den 3tr” · “2tr - 3tr” · “2tr-3tr”
+         “từ 2tr” / “2tr trở lên” / “trên 3tr”  → đầu dưới (≥)
+         “đến 3tr” / “dưới 1tr” / “nhỏ hơn 1tr” → đầu trên (≤)
+     · TRƯỜNG CỤ THỂ (chỉ quét đúng 1 trường, gõ không dấu cũng được):
+         “chú ý 14” (ô ghi chú) · “tên …” · “mã …” / “mã kh …” · “sđt …” / “đt …”
+         “địa chỉ …” / “đc …” · “danh số …” / “ds …” · “mã sổ …” / “ms …”
+         “nhân viên …” / “nv …” · “kỳ …” / “tháng …” · “số tbi …” / “tbi …” · “abc …”
+     · CỜ TRẠNG THÁI (gõ đúng cả cụm, không cần tham số):
+         “nợ cũ” · “nhiều kỳ” · “đã gọi” · “chưa gọi” · “đánh dấu”
+   ⚠️ Thứ tự bóc: TIỀN → TRƯỜNG → CỜ → chữ còn lại ⇒ “chú ý 14 2tr-3tr” hiểu là khách có ghi
+   chú “14” VÀ tổng nợ 2–3tr. Tiền chỉ nhận khi CẢ CỤM là “số + đơn vị” (`_laTienTok`) ⇒
+   “kỳ 1-10/2026” hay “nguyen-van-a” KHÔNG bị hiểu nhầm thành khoảng tiền.
+   ⛔ Đừng sửa `parseTienLoc` (tấm Lọc dùng chung) — mọi thứ riêng của ô tìm kiếm nằm ở đây. */
+const _searchFieldRules = [
+  ['chu y', 'ghi_chu'], ['ghi chu', 'ghi_chu'], ['note', 'ghi_chu'],
+  ['ten khach hang', 'ten_khach_hang'], ['ten kh', 'ten_khach_hang'], ['ten', 'ten_khach_hang'],
+  ['ma khach hang', 'ma_khach_hang'], ['ma kh', 'ma_khach_hang'], ['ma', 'ma_khach_hang'],
+  ['dien thoai', 'dien_thoai'], ['sdt', 'dien_thoai'], ['dt', 'dien_thoai'],
+  ['dia chi', 'dia_chi'], ['dc', 'dia_chi'],
+  ['danh so', 'danh_so'], ['ds', 'danh_so'],
+  ['ma so gcs', 'ma_sogcs'], ['ma so', 'ma_sogcs'], ['so gcs', 'ma_sogcs'], ['ms', 'ma_sogcs'],
+  ['nhan vien', 'nhan_vien'], ['nv', 'nhan_vien'],
+  ['thang no', 'thang_no'], ['thang', 'thang_no'], ['ky', 'thang_no'],
+  ['so tbi', 'so_tbi'], ['tbi', 'so_tbi'],
+  ['abc', 'abc']
+].map(x => [normVn(x[0]), x[1]]).sort((a, b) => b[0].length - a[0].length);
+const _searchFlagRules = [
+  ['no cu', 'old'], ['nhieu ky', 'multi'], ['da goi', 'called'],
+  ['chua goi', 'notcalled'], ['danh dau', 'marked']
+].map(x => [normVn(x[0]), x[1]]);
+/* Cả cụm phải là “SỐ + đơn vị tiền” mới coi là điều kiện tiền — nhờ vậy “1-10/2026”
+   (`kỳ 1-10/2026`) hay “an-a” không bị bóc thành khoảng tiền. */
+/* Chuẩn hoá RIÊNG cho việc so khớp LUẬT: thêm đ→d (normVn KHÔNG bỏ dấu gạch của “đ” nên
+   “đến” ra “đen”, “địa chỉ” ra “đia chi”) ⇒ người dùng gõ “từ 2tr đến 3tr” mà không dấu vẫn khớp.
+   ⚠️ Dùng cho CẢ HAI VẾ của phép so sánh trường (giá trị gõ + giá trị trong dự liệu), không thì
+   khách tên “Đức” gõ “đức” sẽ không tìm ra.
+   ⛔ Đừng đem hàm này thay `normVn` ở `searchHay`: đệm “đồng cỏ” đang dùng `normVn` cho 12 trường. */
+function _normTim(s) { return normVn(s).replace(/đ/g, 'd'); }
+function _laTienTok(v) {
+  let t = String(v == null ? '' : v).toLowerCase().replace(/\s+/g, '');
+  t = t.replace(/(vnđ|vnd|đồng|dong|đ|₫)$/, '');
+  t = t.replace(/(tỷ|tỉ|ty|ti|triệu|trieu|tr|m|nghìn|nghin|ngàn|ngan|k)$/, '');
+  if (!/^[\d.,]+$/.test(t)) return null;
+  return parseTienLoc(v);
+}
+function parseSearchRules(raw) {
+  const out = { text: '', min: null, max: null, field: null, fieldText: '', flags: new Set() };
+  /* `s0` = chuỗi gốc (giữ “đ”) — dùng cho phần CHỮ TÌM KIẾM (phải khớp đúng cách `searchHay`
+     đang chuẩn hoá dự liệu). `s` = bản đã đổi đ→d — CHỈ dùng để nhận diện luật. */
+  const s0 = normVn(String(raw == null ? '' : raw)).trim().replace(/\s+/g, ' ');
+  if (!s0) return out;
+  let s = _normTim(s0);
+  /* (1) KHOẢNG TIỀN — thử từ cụm rõ nghĩa nhất; khớp mà KHÔNG đọc ra số thì bỏ qua để chuỗi
+         rơi xuống nhánh sau (cuối cùng là tìm chữ bình thường). */
+  const tienRules = [
+    [/^(?:tu|from)\s+(.+?)\s+(?:den|toi)\s+(.+)$/, 'range'],
+    [/^(.+?)\s+(?:den|toi)\s+(.+)$/, 'range'],
+    [/^(.+?)\s*-\s*(.+)$/, 'range'],
+    [/^(?:tren|lon hon|>)\s*(.+)$/, 'min'],
+    [/^(?:duoi|nho hon|<)\s*(.+)$/, 'max'],
+    [/^(?:tu|from)\s+(.+?)\s+tro len$/, 'min'],
+    [/^(.+?)\s+tro len$/, 'min'],
+    [/^(?:tu|from)\s+(.+)$/, 'min'],
+    [/^(?:den|toi)\s+(.+)$/, 'max']
+  ];
+  for (const [re, kind] of tienRules) {
+    const m = s.match(re);
+    if (!m) continue;
+    if (kind === 'range') {
+      const a = _laTienTok(m[1]), b = _laTienTok(m[2]);
+      if (a == null || b == null) continue;
+      out.min = Math.min(a, b); out.max = Math.max(a, b); s = '';
+    } else if (kind === 'min') {
+      const a = _laTienTok(m[1]);
+      if (a == null) continue;
+      out.min = a; s = '';
+    } else {
+      const b = _laTienTok(m[1]);
+      if (b == null) continue;
+      out.max = b; s = '';
+    }
+    break;
+  }
+  /* (2) TRƯỜNG CỤ THỂ — khoá DÀI thử trước (“mã sổ” trước “mã”, “danh số” trước “ds”…) */
+  if (s) {
+    for (const [key, field] of _searchFieldRules) {
+      if (s === key || s.indexOf(key + ' ') === 0) {
+        out.field = field;
+        out.fieldText = s.slice(key.length).trim();
+        s = '';
+        break;
+      }
+    }
+  }
+  /* (3) CỜ TRẠNG THÁI — phải gõ ĐÚNG cả cụm (không bắt đầu bằng nó) */
+  if (s) {
+    const f = _searchFlagRules.find(x => x[0] === s);
+    if (f) { out.flags.add(f[1]); s = ''; }
+  }
+  // Phần chữ còn lại: nếu đã bóc hết thành luật thì rỗng, ngược lại giữ NGUYÊN chuỗi gốc `s0`
+  // (có “đ”) để tìm chữ vẫn như bản cũ; trường hợp hiếm: luật tiền đứng SAU chữ — lấy phần đầu.
+  out.text = s ? (s === _normTim(s0) ? s0 : s) : '';
+  return out;
 }
 
 // Đang có điều kiện nào không (dùng cho `data-active` của nút phễu + dòng đếm).
@@ -14411,7 +14546,11 @@ function updateSoTab() {
 }
 
 function applyFilters() {
-  const q = normVn(document.getElementById('searchInput').value);
+  /* ⚡ 2026-11-21: ô tìm kiếm hiểu thêm QUY TẮC (xem `parseSearchRules`) — `_sr.text` là phần chữ
+     CÒN LẠI sau khi bóc luật tiền/trường/cờ, vẫn quét mọi trường như bản cũ (`searchHay`). */
+  const _sr = parseSearchRules(document.getElementById('searchInput').value);
+  const _markedNow = _sr.flags.has('marked') ? new Set(getHighlightedIds()) : null;
+  const q = _sr.text;
   const nhom = document.getElementById('filterNhom').value;
   const adv = advConds();   // 🔎 3 ô của tấm “Lọc theo yêu cầu” (xem khối ngay trên)
 
@@ -14444,6 +14583,21 @@ function applyFilters() {
     // 2026-10-18: “ô tìm kiếm đó là tìm kiếm tất cả giá trị”). Vì dùng chung hàm nên gõ gì vào 2 ô
     // cũng ra CÙNG kết quả — chỉ khác là ô ở đây lọc song song được với khoảng tiền.
     if (adv.q && !searchHay(r).includes(adv.q)) return false;
+    // ⚡ QUY TẮC trong ô tìm kiếm (2026-11-21) — lọc theo TRƯỜNG CỤ THỂ (“chú ý 14”, “tên an”…)
+    if (_sr.field) {
+      const v = _normTim(String(r[_sr.field] == null ? '' : r[_sr.field]));
+      if (!v.includes(_sr.fieldText)) return false;
+    }
+    // … và theo CỜ TRẠNG THÁI (nợ cũ / nhiều kỳ / đã gọi / chưa gọi / đánh dấu)
+    if (_sr.flags.size) {
+      const _k = r.ma_khach_hang || r.ten_khach_hang;
+      if (_sr.flags.has('old') && !_oldMultiSet.has(_k)) return false;
+      if (_sr.flags.has('multi') && (_hdCountMap.get(_k) || 0) < 2) return false;
+      const _ghiChu = !!(r.ghi_chu && String(r.ghi_chu).trim());
+      if (_sr.flags.has('called') && !_ghiChu) return false;
+      if (_sr.flags.has('notcalled') && _ghiChu) return false;
+      if (_sr.flags.has('marked') && !(_markedNow && _markedNow.has(r.ma_khach_hang))) return false;
+    }
     if (q) {
       // ⚡ đệm “đồng cỏ” — xem khối chú thích ở `searchHay` (giống y bản cũ, chỉ khác là KHÔNG
       // `normVn` lại 12 trường cho 10.156 dòng ở mỗi phím).
@@ -14557,7 +14711,11 @@ function applyFilters() {
      (“2 – 3 triệu” rồi “3 – 5 triệu”) thì khách nợ đúng 3.000.000 nằm ở CẢ HAI — chuyện nhỏ,
      đúng như cách người dùng đọc các mốc.
      ⚠️ Giao với điều kiện của tab khoảng nợ nếu đang mở tab đó: hai điều kiện là VÀ, ⛔ không HOẶC. */
-  if (adv.min != null || adv.max != null) {
+  /* ⚡ 2026-11-21: khoảng tiền gõ trong Ô TÌM KIẾM (“từ 2tr đến 3tr”) đi CHUNG đường này với 2 ô
+     của tấm Lọc — cùng quy ước: so với TỔNG nợ của khách, hai đầu bao gồm. */
+  const _minTien = _sr.min != null ? _sr.min : adv.min;
+  const _maxTien = _sr.max != null ? _sr.max : adv.max;
+  if (_minTien != null || _maxTien != null) {
     const tongTheoKhach = new Map();
     rawRows.forEach(r => {
       const k = r.ma_khach_hang || r.ten_khach_hang;
@@ -14565,8 +14723,8 @@ function applyFilters() {
     });
     const okSet = new Set();
     tongTheoKhach.forEach((t, k) => {
-      if (adv.min != null && t < adv.min) return;
-      if (adv.max != null && t > adv.max) return;
+      if (_minTien != null && t < _minTien) return;
+      if (_maxTien != null && t > _maxTien) return;
       okSet.add(k);
     });
     if (keepSet) {
@@ -16653,10 +16811,10 @@ function cardFnEl() {
         '<use href="#i-copy"/></svg>Copy tin nhắn</button>' +
       '<button class="lpsdt-act" data-act="notice" type="button">' +
         '<svg class="ic" width="16" height="16" aria-hidden="true" style="vertical-align:middle">' +
-        '<use href="#i-receipt"/></svg>Xem thông báo KH</button>' +
+        '<use href="#i-receipt"/></svg>Xem thông báo</button>' +
       '<button class="lpsdt-act" data-act="detail" type="button">' +
         '<svg class="ic" width="16" height="16" aria-hidden="true" style="vertical-align:middle">' +
-        '<use href="#i-note"/></svg>Xem chi tiết KH</button>' +
+        '<use href="#i-note"/></svg>Xem chi tiết</button>' +
       '<button class="lpcb-btn" type="button">Đóng</button>' +
     '</div>';
   ov.addEventListener('click', function (e) { if (e.target === ov) cardFnClose(); });
@@ -17975,7 +18133,11 @@ window.addEventListener('resize', function () { applyLoaiLabel(document.getEleme
 
 function saveGhiChu(input) {
   const ma = input.dataset.ma;
-  const val = input.value;
+  /* 2026-11-21 (yêu cầu "cho mục ghi chú mặc định viết chữ in hoa"): LƯU dạng IN HOA — CSS
+     `text-transform` chỉ đổi hình chữ, đổi ở đây thì bản copy tin nhắn, ô trên BẢNG, ô đồng bộ
+     theo SĐT và tệp Excel xuất ra cũng ra chữ hoa. Ô ĐANG GÕ không bị gán lại `value` (giữ
+     nguyên vị trí con trỏ); hình chữ hoa do CSS lo. */
+  const val = String(input.value || '').toUpperCase();
   // Find the phone number of this customer
   const currentRow = allData.find(r => r.ma_khach_hang === ma);
   const phone = currentRow ? (currentRow.dien_thoai || '').trim() : '';
