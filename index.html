@@ -545,13 +545,16 @@
   /* ⟳ 2026-11-01 (yêu cầu “cho cỡ chữ thẻ mức chữ Lớn là mức Chuẩn”): DỊCH CẢ THANG LÊN 1 NẤC —
      “Chuẩn” nay = ĐÚNG cỡ của “Lớn” cũ (19/18), “Lớn” = “Rất lớn” cũ (20/19), “Rất lớn” +1 (21/20),
      “Nhỏ” = “Chuẩn” cũ (18/17), “Rất nhỏ” = “Nhỏ” cũ (17/16). Giữ nhịp ±1px như cũ.
+     ⟳ **2026-11-24 — DỊCH THÊM 1 NẤC** (yêu cầu “nhỏ = rất nhỏ, chuẩn = nhỏ, lớn = chuẩn, rất lớn =
+     lớn, rất lớn cho lớn hơn 1 tí”): “Rất nhỏ” 18/17 · “Nhỏ” 19/18 · “Chuẩn” 20/19 · “Lớn” 21/20 ·
+     “Rất lớn” 22/21 (mức cuối +1px so với bước đều). Áp cho CẢ 5 khối như cũ.
      ⚠️ Đổi CÙNG LÚC 5 khối: `:root` (đây) + 4 khối `body[data-fs]` ngay dưới — lệch một khối là
      thang không còn đơn điệu. */
-  --fs-card-big: 19px;   /* thẻ: TÊN KH + số tiền */
-  --fs-card: 18px;       /* thẻ: mọi ô còn lại (mã KH, mã sổ, danh số, TBI, SĐT, ABC, địa chỉ, ghi chú, tháng) */
-  --fs-card-sep: 14px;   /* thẻ: dấu "-" phân cách */
-  --fs-tb-row: 18px;     /* bảng 3 HÀNG trên điện thoại: 5 ô mã/tiền + ô TÊN + badge tháng */
-  --fs-tb: 16px;         /* bảng 14 CỘT: giá trị NỀN (ở máy tính bị khối `min-width: 640px` ghi đè) */
+  --fs-card-big: 20px;   /* thẻ: TÊN KH + số tiền */
+  --fs-card: 19px;       /* thẻ: mọi ô còn lại (mã KH, mã sổ, danh số, TBI, SĐT, ABC, địa chỉ, ghi chú, tháng) */
+  --fs-card-sep: 15px;   /* thẻ: dấu "-" phân cách */
+  --fs-tb-row: 19px;     /* bảng 3 HÀNG trên điện thoại: 5 ô mã/tiền + ô TÊN + badge tháng */
+  --fs-tb: 17px;         /* bảng 14 CỘT: giá trị NỀN (ở máy tính bị khối `min-width: 640px` ghi đè) */
   /* ── BẢNG 3 HÀNG: LỀ HÀNG (dùng CHUNG cho `padding` của hàng và cho bề rộng của dải nền
      ở hàng “tên + tiền” — đổi 1 số ở đây là cả hai đi theo, không lệch)
      ⟳ **`--row-pad-r`: 2px → 8px** (yêu cầu “cho hàng số tiền, tháng, mã sổ nằm xích vô 1 tí
@@ -606,7 +609,7 @@
      ⚠️ MỘT giá trị cho CẢ BA mức “Nền” (cố ý như trước — đổi theo mức là tương phản chữ trên dải
      đổi theo). ⛔ LIGHT KHÔNG ĐỤNG (ba giá trị light ở `body.light-mode` + 2 rule `[data-surface]`). */
   --row1-bg: #212b42;
-  --fs-tb-desk: 15px;    /* bảng 14 CỘT trên MÁY TÍNH (⟳ 2026-11-01: 14 → 15 theo thang dịch 1 nấc) — khối `@media (min-width: 640px)`
+  --fs-tb-desk: 16px;    /* bảng 14 CỘT trên MÁY TÍNH (⟳ 2026-11-01: 14 → 15 theo thang dịch 1 nấc) — khối `@media (min-width: 640px)`
                             ⚠️ Tên cũ `--fs-tb-sm` dễ đọc nhầm thành “bản nhỏ ở điện thoại”, nhưng
                             khối đó là **min-width** ⇒ đây mới là cỡ THẬT của bảng máy tính
                             (đã đo ở 1600px: `chuan` = **14px**, hàng cao **32,64px**). */
@@ -616,14 +619,14 @@
      nút cỡ chữ của app (nhỏ/chuẩn/lớn) thay vì px cứng, luôn giữ số lớn hơn nhãn một cấp”.
      ⚠️ Vì sao PHẢI là **HAI** token: nhãn và SỐ lệch nhau ĐÚNG **2px** (“một cấp”) ở MỌI mức —
      một token duy nhất không diễn tả được quan hệ đó. Giá trị theo mức:
-       · Nhãn (`--fs-count-lbl`):  nho **16** · chuan **17** · to **18px**
-       · Số  (`--fs-count-num`):  nho **18** · chuan **19** · to **20px**
+       · Nhãn (`--fs-count-lbl`):  nho **18** · chuan **19** · to **20px**
+       · Số  (`--fs-count-num`):  nho **20** · chuan **21** · to **22px**
      ⚠️ Nhịp **±1px** giống hệt `--fs-card*`/`--fs-tb*` ở trên — đây chính là “ba mức” người dùng
      đã chọn, đừng cho hàng Tổng nhảy 2px một mức.
      ℹ️ Nhánh `@media (max-width: 359.98px)` KHÔNG cần khai lại theo mức: nó dùng `calc(… − 1px)`
      nên tự đúng ở cả ba mức (xem chú thích trong nhánh đó). */
-  --fs-count-lbl: 18px;   /* ⟳ 2026-11-01: theo thang dịch 1 nấc */
-  --fs-count-num: 20px;
+  --fs-count-lbl: 19px;   /* ⟳ 2026-11-01: dịch 1 nấc · ⟳ 2026-11-24: dịch thêm 1 nấc */
+  --fs-count-num: 21px;
 }
 /* NĂM mức. Tên mức phải khớp mảng `FS_LEVELS` trong JS và `data-fs` trên <body>.
    ⟳ 2026-10-03ag: 3 mức → **5 MỨC** (yêu cầu “có 5 mức, thêm mức rất nhỏ, rất lớn”).
@@ -633,24 +636,24 @@
    là NỐI DÀI cùng một thang chứ không đổi bước. */
 /* ⟳ 2026-11-01: CẢ 4 KHỐI DƯỚI DỊCH LÊN 1 NẤC (xem chú thích ở `:root`) ⇒ “Chuẩn” = cỡ “Lớn” cũ. */
 body[data-fs="ratnho"] {
-  --fs-card-big: 17px; --fs-card: 16px; --fs-card-sep: 12px;
-  --fs-tb-row: 16px;   --fs-tb: 14px;   --fs-tb-desk: 13px;
-  --fs-count-lbl: 16px; --fs-count-num: 18px;
-}
-body[data-fs="nho"] {
   --fs-card-big: 18px; --fs-card: 17px; --fs-card-sep: 13px;
   --fs-tb-row: 17px;   --fs-tb: 15px;   --fs-tb-desk: 14px;
   --fs-count-lbl: 17px; --fs-count-num: 19px;
 }
-body[data-fs="to"] {
-  --fs-card-big: 20px; --fs-card: 19px; --fs-card-sep: 15px;
-  --fs-tb-row: 19px;   --fs-tb: 17px;   --fs-tb-desk: 16px;
-  --fs-count-lbl: 19px; --fs-count-num: 21px;
+body[data-fs="nho"] {
+  --fs-card-big: 19px; --fs-card: 18px; --fs-card-sep: 14px;
+  --fs-tb-row: 18px;   --fs-tb: 16px;   --fs-tb-desk: 15px;
+  --fs-count-lbl: 18px; --fs-count-num: 20px;
 }
-body[data-fs="ratto"] {
+body[data-fs="to"] {
   --fs-card-big: 21px; --fs-card: 20px; --fs-card-sep: 16px;
   --fs-tb-row: 20px;   --fs-tb: 18px;   --fs-tb-desk: 17px;
   --fs-count-lbl: 20px; --fs-count-num: 22px;
+}
+body[data-fs="ratto"] {
+  --fs-card-big: 22px; --fs-card: 21px; --fs-card-sep: 17px;
+  --fs-tb-row: 21px;   --fs-tb: 19px;   --fs-tb-desk: 18px;
+  --fs-count-lbl: 21px; --fs-count-num: 23px;
 }
 
 /* ── Viên (pill) trên card — light mode ── */
@@ -2188,8 +2191,15 @@ body.light-mode .count-tien { color: #c2410c; }   /* ⟳ 2026-10-28 (ảnh mẫu
   padding: 2px 7px; gap: 2px;
   font-size: 12px; font-weight: 600; line-height: 1.15; white-space: nowrap;
   max-width: 100%;
-  background: rgba(71,85,105,0.35);
-  border: 1px solid var(--ctl-line);
+  /* ⟳ 2026-11-24 (yêu cầu “cho tab cài đặt cùng màu với màu thẻ”, ảnh = nút “Cài đặt”): NỀN + VIỀN
+     của nút nay lấy ĐÚNG cặp của thẻ khách hàng `.kh-card` — dark `var(--dk-card)` (= `--ctl-solid`)
+     + viền `var(--card-line)` = ĐÚNG viền thẻ (`rgba(148,163,184,0.55)` dark · `#94a3b8` light).
+     Ở light dùng LUÔN `var(--card-line)`, ⛔ KHÔNG dùng `--light-edge` (`#374151`) — đã đo live
+     thấy viền thẻ sáng thật là `#94a3b8` (rule sau đè `--light-edge`); nền vẫn `var(--light-card)`
+     (xem `body.light-mode .cfg-btn`). Trước đây nền là xám riêng `rgba(71,85,105,0.35)` + viền
+     `--ctl-line` nên đứng cạnh thẻ là lệch tông. ⛔ Màu CHỮ/ICON không đụng (icon vẫn xanh). */
+  background: var(--dk-card);
+  border: 1px solid var(--card-line);
   border-radius: 8px;
   color: rgba(255,255,255,0.75);
   cursor: pointer;
@@ -2198,7 +2208,7 @@ body.light-mode .count-tien { color: #c2410c; }   /* ⟳ 2026-10-28 (ảnh mẫu
   transition: border-color 0.2s, background-color 0.2s, color 0.2s;
 }
 .cfg-btn:active { background: rgba(59,130,246,0.22); }
-body.light-mode .cfg-btn { background: var(--ctl-light-bg); border-color: var(--ctl-light-line); color: #4b5563; }
+body.light-mode .cfg-btn { background: var(--light-card); border-color: var(--light-edge); color: #4b5563; }
 /* ⟳ 2026-11-22 (tiếp 4) — yêu cầu “đổi icon khác và cho icon màu xanh”:
    · ICON ĐỔI: bánh răng → **3 THANH TRƯỢT** (`tune/sliders`), cùng lưới 24×24 + nét 2.2 như
      quy tắc icon của app. Icon vẽ TẠI CHỖ trong `#cfgBtn` (sprite không có `#i-tune`).
@@ -2769,11 +2779,25 @@ body.light-mode .search-clear:active { background: #dc2626; color: #ffffff; }
    `1.18` như bản nền tối là bấm vào nút “sáng nhoè” rồi mất chữ. */
 .lpcb-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); display: none; align-items: center; justify-content: center; padding: 16px; z-index: 4200; }
 .lpcb-overlay.on { display: flex; }
-.lpcb-card { width: min(92vw, 560px); background: #ffffff; color: #0f172a; border: 1px solid #94a3b8; border-radius: 12px; padding: 14px; box-shadow: var(--elev-3); }
+/* ⟳ **2026-11-24 — ĐỒNG BỘ MÀU HỆ THỐNG** (yêu cầu “cho đồng bộ với màu hệ thống”, 2 ảnh =
+   hộp “Chức năng” + hộp “Số điện thoại”): khung `.lpcb-*` (dùng bởi `#lpSdtBox` · `#cardFnBox` ·
+   `#lpCopyBox` · `#pinBox` · `#dirBox`) NAY THEO THEME, ⛔ không còn trắng ở cả 2 chế độ (đảo
+   lại chủ ý 2026-10-18 “khung SÁNG cho cả 2 theme”). Giá trị GỐC = theme TỐI (mặc định của app),
+   `body.light-mode` giữ ĐÚNG bản sáng cũ:
+     · nền hộp = `#1a1d24` — ĐÚNG nền tấm “Chi tiết”/“Thanh toán” (`.modal`) ⇒ hộp nổi cùng hệ;
+       viền `var(--border)`, chữ `var(--text)` (`#e2e8f0`).
+     · nút viền/chữ `#60a5fa` (blue-400) trên `#1a1d24` = **6,65:1** ✓ AA; lúc CHẠM đảo màu:
+       nền `#60a5fa` + chữ `#0b1220` ✓. Dòng số `.lpsdt-num` = `#93c5fd` (blue-300, **~9:1** ✓).
+     · nút Zalo ở dark KHÔNG dùng `#0068ff` (chỉ **3,55:1** trên nền hộp) → `#5b9dff` (**~6,3:1** ✓).
+   ⛔ Đừng xoá nhánh `body.light-mode` — light mode vẫn phải ra nền TRẮNG + `#2563eb` như trước. */
+.lpcb-card { width: min(92vw, 560px); background: #1a1d24; color: var(--text); border: 1px solid var(--border); border-radius: 12px; padding: 14px; box-shadow: var(--elev-3); }
+body.light-mode .lpcb-card { background: #ffffff; color: #0f172a; border-color: #94a3b8; }
 .lpcb-title { font-size: 14px; line-height: 1.35; margin-bottom: 8px; }
 /* `user-select: text` là BẮT BUỘC (app đặt `user-select: none` cho thẻ/hàng; ô này nằm ngoài
    các thẻ đó nhưng vẫn phải khai tường minh để không phụ thuộc vào chỗ dán vào). */
-.lpcb-ta { width: 100%; min-height: 84px; box-sizing: border-box; resize: vertical; border-radius: 8px; border: 1px solid #64748b; background: #f1f5f9; color: #0f172a; font-size: 15px; line-height: 1.4; padding: 8px; -webkit-user-select: text; user-select: text; }
+.lpcb-ta { width: 100%; min-height: 84px; box-sizing: border-box; resize: vertical; border-radius: 8px; border: 1px solid #64748b; background: rgba(255,255,255,0.06); color: var(--text); font-size: 15px; line-height: 1.4; padding: 8px; -webkit-user-select: text; user-select: text; }
+/* Nền sáng của ô tự-copy — giữ nguyên bản trước lượt “đồng bộ màu hệ thống”. */
+body.light-mode .lpcb-ta { background: #f1f5f9; color: #0f172a; }
 /* ⟳ 2026-10-19 (yêu cầu người dùng “bỏ màu nền, khi chọn mới hiện màu nền”, ảnh = hộp SĐT):
    nút “Đóng” của CẢ 2 hộp còn lại dùng chung khung `.lpcb-*` (`#lpSdtBox` + `#lpCopyBox` — ⟳
    2026-10-19: hộp `#lpMaBox` đã bị gỡ hẳn cùng cử chỉ nhấn-giữ ô mã) nay **NỀN TRONG SUỐT** + viền/chữ `#2563eb`
@@ -2784,9 +2808,12 @@ body.light-mode .search-clear:active { background: #dc2626; color: #ffffff; }
    (cũng 1px viền + 10px đệm) ⇒ hàng nút trong hộp đều nhau; ⛔ đừng “trả lại” `border: 0`.
    ⚠️ `font-family: inherit` cũng phải có (đây là **thẻ `<button>`** — nút KHÔNG tự thừa hưởng
    font như `<a>`; chú thích ở `.lpsdt-act` dưới đã nhắc đúng lỗi này). */
-.lpcb-btn { margin-top: 10px; width: 100%; padding: 10px; border: 1px solid #2563eb; border-radius: 8px; background: transparent; color: #2563eb; font-size: 15px; font-weight: 600; font-family: inherit; cursor: pointer; }
-/* Nút “Đóng” khi ĐANG CHẠM mới hiện nền (đổ đầy `#2563eb` + chữ trắng = 5,17:1 ✓). */
-.lpcb-btn:active { background: #2563eb; color: #ffffff; filter: brightness(0.97); }
+.lpcb-btn { margin-top: 10px; width: 100%; padding: 10px; border: 1px solid var(--card-line); border-radius: 8px; background: transparent; color: #cbd5e1; font-size: 16px; font-weight: 500; font-family: inherit; cursor: pointer; }
+body.light-mode .lpcb-btn { border-color: var(--card-line); color: #1e293b; }
+/* Nút “Đóng” khi ĐANG CHẠM mới hiện nền xám nhạt `rgba(148,163,184,0.22)` — ĐÚNG phản hồi của
+   tab `.loai-tab:active`; chữ/viền giữ nguyên ⇒ không có chuyện chữ xanh trên nền xanh. */
+.lpcb-btn:active { background: rgba(148,163,184,0.22); color: #cbd5e1; }
+body.light-mode .lpcb-btn:active { background: rgba(148,163,184,0.22); color: #1e293b; }
 
 /* ➕ HỘP “GỌI ĐIỆN / NHẮN ZALO” — mở khi NHẤN-GIỮ viên SĐT (2026-10-17n).
    Dùng lại NGUYÊN khung của hộp copy (`.lpcb-overlay`/`.lpcb-card`/`.lpcb-btn`) — ⟳ 2026-10-18
@@ -2816,15 +2843,27 @@ body.light-mode .search-clear:active { background: #dc2626; color: #ffffff; }
    ⚠️ `font-family: inherit` + `cursor: pointer` phải có vì mục “Sao chép” là **thẻ `<button>`**
    (nút KHÔNG tự thừa hưởng `font-family` như `<a>` ⇒ thiếu là chữ trong nút đổi sang font hệ thống,
    lệch hẳn 3 nút còn lại — đã thấy đúng kiểu lỗi này ở `.lpcb-btn`). */
-.lpsdt-act { display: flex; align-items: center; justify-content: center; gap: 7px; margin-top: 10px; width: 100%; box-sizing: border-box; padding: 10px; border-radius: 8px; background: transparent; border: 1px solid #2563eb; color: #2563eb; font-size: 15px; font-weight: 600; text-decoration: none; font-family: inherit; cursor: pointer; }
+.lpsdt-act { display: flex; align-items: center; justify-content: center; gap: 7px; margin-top: 10px; width: 100%; box-sizing: border-box; padding: 10px; border-radius: 8px; background: transparent; border: 1px solid var(--card-line); color: #cbd5e1; font-size: 16px; font-weight: 500; text-decoration: none; font-family: inherit; cursor: pointer; }
+body.light-mode .lpsdt-act { border-color: var(--card-line); color: #1e293b; }
+/* ICON giữ XANH của tab “Chi tiết” (`var(--ic-hash)` = `#35a3e0` dark · `#2563eb` light) trong khi
+   CHỮ đã về màu chữ thường — đúng cặp “icon xanh + chữ sáng/tối” của tab đó. */
+.lpsdt-act .ic { color: var(--ic-hash); }
 /* ⟳ 2026-10-18: nút phụ để NỀN TRONG SUỐT (trước là xám `#f1f5f9` ⇒ cả 4 nút đều trông như
    “đang được chọn”). Nay **CHỈ HIỆN NỀN khi ĐANG CHẠM** (`:active`) — đúng yêu cầu “khi chọn
    mới hiển thị màu nền”.
    ⟳ 2026-10-19 (yêu cầu “đổi luôn viền xanh, chữ xanh”): nút phụ ăn `#2563eb` cả viền lẫn chữ ⇒
    lúc ĐANG CHẠM phải ĐỔI SANG NỀN XANH + CHỮ TRẮNG (5,17:1 ✓) chứ ⛔ KHÔNG dùng lại nền xám
-   `#e2e8f0`: chữ `#2563eb` trên `#e2e8f0` chỉ **4,16:1** (trượt AA 4,5:1). */
-.lpsdt-act:active { background: #2563eb; color: #ffffff; filter: brightness(0.97); }
-/* ⇢ 2026-11-04 (yêu cầu “cho chữ này to hơn 1 nấc”): chữ các mục của HỘP VỊ TRÍ (`.lpsdt-act` trong
+   `#e2e8f0`: chữ `#2563eb` trên `#e2e8f0` chỉ **4,16:1** (trượt AA 4,5:1).
+   ⟳ 2026-11-24: CHỮ đã về màu chữ thường (xem khối `.cfg-btn`/`--card-line`) nên lúc CHẠM chỉ
+   đổi NỀN xám `rgba(148,163,184,0.22)` như `.loai-tab:active`; ⛔ không đảo màu chữ nữa. */
+.lpsdt-act:active { background: rgba(148,163,184,0.22); color: #cbd5e1; }
+body.light-mode .lpsdt-act:active { background: rgba(148,163,184,0.22); color: #1e293b; }
+/* ⟳ 2026-11-24 (yêu cầu “cho chữ lớn hơn 1 tí”, ảnh = 2 hộp menu): chữ các mục 15 → **16px**
+   (cả `.lpsdt-act` lẫn nút “Đóng” `.lpcb-btn`). Nút trong hộp tự cao thêm theo chữ.
+   ⟳ cùng ngày (yêu cầu “cho chữ nét mỏng hơn”): `font-weight` của các mục **600 → 500**
+   (nút “Đóng” cùng rule) và tên khách `.lpsdt-name` **700 → 600** — nét mảnh hơn mà cỡ chữ giữ 16px,
+   tương phản không đổi (chỉ giảm độ dày nét, màu chữ y nguyên).
+   ⇢ 2026-11-04 (yêu cầu “cho chữ này to hơn 1 nấc”): chữ các mục của HỘP VỊ TRÍ (`.lpsdt-act` trong
    `#pinBox` + `#dirBox`) **15 → 17px**. ⚠️ Khai RIÊNG theo hộp (⛔ không sửa `.lpsdt-act` ở trên) để
    hộp nhấn-giữ SỐ ĐIỆN THOẠI giữ nguyên cỡ chữ. */
 #pinBox .lpsdt-act, #dirBox .lpsdt-act { font-size: 17px; }
@@ -2832,14 +2871,26 @@ body.light-mode .search-clear:active { background: #dc2626; color: #ffffff; }
    CẢ 2 nút màu, tức nút Zalo này lẫn nút “Đóng” `.lpcb-btn`): nút Zalo nay **NỀN TRONG SUỐT** +
    viền & chữ `#0068ff` (**4,74:1** ✓) — vẫn đọc ra “nút Zalo” nhờ màu thương hiệu, mà không còn
    “nặng” hơn các nút phụ trong cùng hộp.
-   ⚠️ Icon `#i-zalo` ăn `currentColor` ⇒ tự xanh theo chữ, ⛔ KHÔNG phải khai màu cho icon. */
-.lpsdt-act-zalo { background: transparent; border-color: #0068ff; color: #0068ff; }
+   ⚠️ ⟳ 2026-11-24: CHỮ của nút Zalo nay là màu chữ thường (`#cbd5e1` / `#1e293b`) ⇒ màu Zalo
+   chỉ còn ở ICON (`#5b9dff` dark · `#0068ff` light) — xem 2 rule `.lpsdt-act-zalo .ic` dưới. */
+.lpsdt-act-zalo { background: transparent; border-color: var(--card-line); color: #cbd5e1; }
+.lpsdt-act-zalo .ic { color: #5b9dff; }
+body.light-mode .lpsdt-act-zalo { border-color: var(--card-line); color: #1e293b; }
+body.light-mode .lpsdt-act-zalo .ic { color: #0068ff; }
 /* Khi ĐANG CHẠM mới hiện nền: đổ đầy màu thương hiệu `#0068ff` + chữ trắng (4,74:1 ✓).
    ⚠️ PHẢI khai lại `color: #ffffff` NGAY ĐÂY: rule `.lpsdt-act-zalo` ngay trên đang đặt chữ màu
    xanh, mà cả 2 rule cùng độ ưu tiên (2 lớp) ⇒ thiếu dòng này là **chữ xanh trên nền xanh**
    (tương phản 1,0:1 — mất chữ lúc đang bấm). */
-.lpsdt-act-zalo:active { background: #0068ff; color: #ffffff; }
-.lpsdt-num { color: #1d4ed8; }
+.lpsdt-act-zalo:active { background: rgba(148,163,184,0.22); color: #cbd5e1; }
+body.light-mode .lpsdt-act-zalo:active { background: rgba(148,163,184,0.22); color: #1e293b; }
+.lpsdt-num { color: #93c5fd; }
+body.light-mode .lpsdt-num { color: #1d4ed8; }
+/* ➕ 2026-11-24 (yêu cầu “thêm tên kh ở trên”, ảnh = dòng “Số điện thoại 0913603719” của hộp
+   nhấn-giữ SĐT): TÊN KHÁCH nằm TRÊN dòng số điện thoại. Chữ đậm `#0f172a` trên nền hộp trắng
+   = **17,85:1** ✓ (cùng màu chữ chuẩn của `.lpcb-card`), đậm hơn dòng số `.lpsdt-num` (`#1d4ed8`)
+   để đọc ra ngay đang gọi cho ai. `word-break` để tên dài rớt dòng chứ không tràn khỏi hộp.
+   ⛔ Hộp này ẩn hẳn (JS đặt `display: none`) khi KHÔNG tìm được tên (mở từ chỗ không có thẻ KH). */
+.lpsdt-name { font-size: 16px; font-weight: 600; line-height: 1.3; color: inherit; margin-bottom: 2px; word-break: break-word; }
 
 .filter-row { display: flex; gap: 2px; }
 /* Chấm màu nhóm trong ô lọc (thay emoji) */
@@ -2933,6 +2984,28 @@ body:not(.light-mode) .filter-select[data-active="1"] { background-color: var(--
    không làm chữ dính icon. ⚠️ Selector `.filter-select svg.ic` CHỈ trúng icon của 2 TAB
    (icon trong dropdown là `.nhom-option` — anh em ruột, không nằm trong `.filter-select`). */
 .filter-select svg.ic { margin-right: -3px; }
+/* ⟳ 2026-11-23 (yêu cầu “cho tên nằm xích ra và ngang với icon”, ảnh = ô “Nhân viên”):
+   NHÃN CỦA Ô LỌC XẾP BẰNG FLEX.
+   · **Ngang với icon**: trước đây icon (`inline-flex` 19px) và chữ nằm chung một dòng chữ
+     ⇒ icon bám BASELINE, còn hộp 19px của nó cao hơn dòng chữ 18px ⇒ mắt thấy chữ THẤP
+     hơn icon. `align-items: center` đặt tâm dòng chữ đúng tâm icon (đo được lệch 0px).
+   · **Xích ra**: khe icon ↔ chữ nay là `gap: 7px` CỐ ĐỊNH, thay cho 1 ký tự space (~5px)
+     mà `svg.ic { margin-right: -3px }` ở trên ăn còn ~2px ⇒ phải trả `margin-right` về 0
+     cho icon TRONG NHÃN (`#filterNhomLabel/#filterLoaiLabel svg.ic`) thì `gap` mới đúng 7px.
+     ⚠️ Rule `margin-right: -3px` vẫn giữ nguyên cho các icon khác của `.filter-select`.
+   · `.flt-txt` / `.nhom-sel-name` phải có `min-width: 0` + `text-overflow: ellipsis`:
+     thiếu `min-width: 0` thì flex item không co dưới nội dung ⇒ chữ bị CẮT CỤT mà không
+     có dấu “…”. Nhãn rộng thêm ~5px nên `fitFilterLabel()` vẫn tự hạ cấp khi ô hẹp.
+   ⛔ Đừng bỏ `gap` để quay lại dấu cách trong markup — space giữa 2 flex item bị BỎ. */
+#filterNhomLabel, #filterLoaiLabel { display: flex; align-items: center; gap: 7px; }
+#filterNhomLabel svg.ic, #filterLoaiLabel svg.ic { margin-right: 0; }
+#filterNhomLabel .flt-txt, #filterLoaiLabel .flt-txt,
+#filterNhomLabel .nhom-sel-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .filter-select option {
   background: var(--navy-mid);
   color: var(--text);
@@ -9345,6 +9418,10 @@ body:not(.light-mode) .kh-card.kh-card.kh-card .kh-mid-row .kh-ma { color: #cbd5
 body .kh-card .kh-idcol .kh-name {
   display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2;
   overflow: hidden; min-width: 0;
+  /* ⟳ 2026-11-24: thang cỡ chữ dịch 1 nấc ⇒ ở khổ 320px + mức “Rất lớn” (22px) một từ dài hơn
+     cột (~95px) thò ra **2px** và bị `overflow: hidden` cắt NGANG CHỮ. `overflow-wrap` ngắt
+     ĐÚNG từ đó xuống hàng (từ vừa thì không đổi gì) — vẫn giữ clamp 2 hàng. */
+  overflow-wrap: break-word;
 }
 
 /* 8) IN: vệt màu / chevron / icon lịch không mang dữ liệu ⇒ bỏ khi in; viên tiền về trắng. */
@@ -9412,6 +9489,9 @@ body .kh-card > .kh-phone-row .kh-dir-btn.is-on .em,
 body .kh-card > .kh-phone-row > .kh-photo.has-photo .em { opacity: 1; }   /* ⟳ 2026-11-03 (yêu cầu “cho icon nhạt xuống 1 nấc” — sau khi vừa nâng lên 0,9): **0,9 → 0,75**. Vẫn đậm hơn mức gốc `.em` (0,5) nên 2 icon đọc rõ hơn 📞/🏷️ của thẻ. ⚠️ Emoji không ăn `color` ⇒ đây là cách DUY NHẤT chỉnh độ đậm. */
 
 /* ══ 2026-11-02 — TRƯỢT THẺ SANG TRÁI ĐỂ HIỆN 2 NÚT “Quay lại” / “Xoá” ══════════════════════════
+   🗑 2026-11-23: **TÍNH NĂNG ĐANG TẮT** (yêu cầu “bỏ trượt ngang để xoá”) — `renderCards()`
+   KHÔNG còn gọi `initSwipeCards()` ⇒ 7 rule `.kh-swipe*` dưới đây không có phần tử nào khớp.
+   Giữ lại nguyên vẹn để bật lại: bỏ chú thích dòng `initSwipeCards();` trong `renderCards()`.
    Yêu cầu: “thêm tuỳ chọn khi trượt thẻ qua trái sẽ hiện nút xoá,quay lại”.
    Cách làm: `renderCards()` gọi `initSwipeCards()` để BỌC mỗi `.kh-card` trong một `.kh-swipe`
    (khung `overflow: hidden`) + chèn sẵn 2 nút NẰM DƯỚI thẻ (`.kh-swipe-acts`, absolute mép phải).
@@ -9720,8 +9800,19 @@ body.light-mode .login-err { color: #dc2626; }
        · `catch` riêng: webview chặn sessionStorage thì coi như CHƯA mở khoá (khoá vẫn ăn);
          lỗi ở đây KHÔNG được làm hỏng phần khôi phục theme phía trên.
        ⛔ Đừng đọc cờ này bằng localStorage — đóng tab vẫn còn khoá là mất tác dụng. */
+    /* ⏱ 2026-11-23 — THÊM ĐIỀU KIỆN “QUÁ 30 PHÚT KHÔNG DÙNG”.
+       Yêu cầu: “không sử dụng app trong 30 phút thì phải đăng nhập lại”.
+       · Cờ mở khoá của PHIÊN vẫn là `sessionStorage['qlno_login_v1']`.
+       · Mốc hoạt động CUỐI nằm ở `localStorage['qlno_login_last']` (ms) — ⛔ KHÔNG dùng
+         sessionStorage: đóng tab rồi mở lại vẫn phải tính đúng 30 phút.
+       · Thiếu mốc / đọc không được (webview chặn localStorage) ⇒ coi như QUÁ HẠN ⇒ khoá
+         lại (an toàn hơn là để lọt). Script đăng nhập bên dưới ghi lại mốc ngay khi mở khoá.
+       ⚠️ Con số 1800000 phải khớp `LOGIN_IDLE_MS` trong script dưới `#loginGate`. */
     try {
-      if (sessionStorage.getItem('qlno_login_v1') !== '1') document.body.classList.add('login-locked');
+      var _lkOk = sessionStorage.getItem('qlno_login_v1') === '1';
+      var _lkLast = parseInt(localStorage.getItem('qlno_login_last'), 10) || 0;
+      var _lkHet = !_lkLast || (Date.now() - _lkLast) > 1800000;
+      if (!_lkOk || _lkHet) document.body.classList.add('login-locked');
     } catch (err) {
       document.body.classList.add('login-locked');
     }
@@ -9851,7 +9942,44 @@ body.light-mode .login-err { color: #dc2626; }
   var inp = document.getElementById('loginPass');
   var inpUser = document.getElementById('loginUser');
   var err = document.getElementById('loginErr');
-  if (!gate || !form || !inp || !inpUser || !document.body.classList.contains('login-locked')) return;
+  /* ⏱ 2026-11-23 — TỰ KHOÁ SAU 30 PHÚT KHÔNG DÙNG.
+     Yêu cầu: “không sử dụng app trong 30 phút thì phải đăng nhập lại”.
+     · Ghi mốc hoạt động cuối vào `localStorage['qlno_login_last']` lúc ĐĂNG NHẬP THÀNH CÔNG và
+       mỗi ~15 giây khi có chạm/gõ/cuộn (chặn ghi dồn dập cho nhẹ máy).
+     · Kiểm mỗi 30 giây + kiểm 1 lần khi tải trang (script đầu trang) ⇒ quá 30 phút là hiện lại
+       màn “Hello!”, phải nhập mật khẩu mới vào được.
+     ⚠️ 30 phút = `1800000` ms — PHẢI khớp con số trong script đầu trang.
+     ⚠️ Trình duyệt ngủ đông tab thì `setInterval` có thể trễ; mốc thời gian vẫn đúng nên lần
+       tải lại / lần chạm kế tiếp sẽ khoá ngay. */
+  var LOGIN_IDLE_MS = 30 * 60 * 1000;
+  var LOGIN_LAST_KEY = 'qlno_login_last';
+
+  function ghiMocHoatDong() {
+    try { localStorage.setItem(LOGIN_LAST_KEY, String(Date.now())); } catch (e) {}
+  }
+
+  /* Khoá lại app tại chỗ: dùng ĐÚNG đường của lúc tải trang `login-locked` ⇒ CSS phủ màn
+     đăng nhập, khoá cuộn; form ở dưới vẫn là form cũ nên chỉ cần xoá ô mật khẩu.
+     Xoá luôn cờ phiên ⇒ bấm F5 vẫn khoá (mốc thời gian cũng đã quá hạn). */
+  function khoaLaiViLauKhongDung() {
+    try { sessionStorage.removeItem(LOGIN_KEY); } catch (e) {}
+    if (err) err.textContent = '';
+    inp.value = '';
+    if (_mayTinh) inpUser.value = '';
+    document.body.classList.add('login-locked');
+    try { (_mayTinh ? inpUser : inp).focus(); } catch (e) {}
+  }
+
+  function kiemTraLauKhongDung() {
+    var t = 0;
+    try { t = parseInt(localStorage.getItem(LOGIN_LAST_KEY), 10) || 0; } catch (e) {}
+    if (!t || (Date.now() - t) > LOGIN_IDLE_MS) khoaLaiViLauKhongDung();
+  }
+
+  /* Phần còn lại CHỈ cần markup. (Trước 2026-11-23 chỗ này còn đòi sẵn lớp `login-locked` và
+     thoát sớm ⇒ khi app đang MỞ thì không ai ghi mốc hoạt động được; nay thoát sớm chỉ khi
+     thiếu markup để không chặn nhầm app.) */
+  if (!gate || !form || !inp || !inpUser) return;
 
   /* 📱 ĐIỆN THOẠI: giấu HẲN ô “Tài khoản” (cả nhãn lẫn ô) — màn đăng nhập chỉ còn Mật khẩu.
      Máy tính KHÔNG đổi (vẫn Tài khoản + Mật khẩu). */
@@ -9912,6 +10040,7 @@ body.light-mode .login-err { color: #dc2626; }
       if (p !== maNgayHomNay()) { loi('Mật khẩu không đúng'); return; }
     }
     try { sessionStorage.setItem(LOGIN_KEY, '1'); } catch (e) {}
+    ghiMocHoatDong();         // ⏱ mốc 2 tiếng tính lại từ lúc đăng nhập
     if (err) err.textContent = '';
     inp.value = '';           // mở khoá xong thì xoá mã khỏi ô, không để lộ lại trong DOM
     document.body.classList.remove('login-locked');
@@ -9920,6 +10049,27 @@ body.light-mode .login-err { color: #dc2626; }
   // Gõ lại là xoá dòng báo lỗi cho đỡ rối mắt (áp cho CẢ 2 ô).
   inp.addEventListener('input', function () { if (err) err.textContent = ''; });
   inpUser.addEventListener('input', function () { if (err) err.textContent = ''; });
+
+  /* ⏱ 2026-11-23 — BẮT HOẠT ĐỘNG + ĐỒNG HỒ KIỂM 2 TIẾNG.
+     · Chỉ tính khi app đang MỞ (còn màn đăng nhập thì chạm vào form không phải “sử dụng app”).
+     · Ghi mốc tối đa 4 lần/phút (`_lastGhi`); nghe bằng `capture` để không phụ thuộc chỗ nào
+       `stopPropagation`, và `passive` cho `touchstart/wheel` khỏi chặn cuộn. */
+  var _lastGhi = 0;
+  function chamHoatDong() {
+    if (document.body.classList.contains('login-locked')) return;
+    var now = Date.now();
+    if (now - _lastGhi < 15000) return;
+    _lastGhi = now;
+    ghiMocHoatDong();
+  }
+  ['pointerdown', 'keydown', 'touchstart', 'wheel'].forEach(function (ten) {
+    try { document.addEventListener(ten, chamHoatDong, { passive: true, capture: true }); }
+    catch (e) { document.addEventListener(ten, chamHoatDong, true); }
+  });
+  try { setInterval(kiemTraLauKhongDung, 30000); } catch (e) {}
+  /* Đang mở mà mốc đã quá hạn (thường là tab ngủ đông rồi được đánh thức) ⇒ khoá NGAY,
+     đừng đợi nhịp 30 giây. */
+  if (!document.body.classList.contains('login-locked')) kiemTraLauKhongDung();
 
   try { (_mayTinh ? inpUser : inp).focus(); } catch (e) {}
 })();
@@ -10330,7 +10480,7 @@ body.light-mode .login-err { color: #dc2626; }
              tìm trong cả `r.ma_sogcs`). -->
         <div class="filter-row" style="position:relative;">
           <div class="filter-select" id="filterNhomBtn" onclick="toggleNhomDropdown()" style="display:flex;align-items:center;gap:4px;cursor:pointer;position:relative">
-            <span id="filterNhomLabel" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><span style="color:var(--ic-hash);display:inline-flex;flex-shrink:0;align-items:center"><svg class="ic" width="19" height="19" aria-hidden="true"><use href="#i-people"/></svg></span> Nhân viên</span>
+            <span id="filterNhomLabel" style="flex:1;overflow:hidden;white-space:nowrap"><span style="color:var(--ic-hash);display:inline-flex;flex-shrink:0;align-items:center"><svg class="ic" width="19" height="19" aria-hidden="true"><use href="#i-people"/></svg></span><span class="flt-txt">Nhân viên</span></span>
           </div>
           <div class="nhom-dropdown" id="nhomDropdown" style="display:none;position:absolute;top:100%;left:0;right:0;margin-top:4px;background:var(--navy-mid);border:1px solid var(--border);border-radius:10px;z-index:999;max-height:400px;overflow-y:auto;box-shadow:var(--elev-3)">
             <div class="nhom-option" data-val="" onclick="selectNhom('')" style="padding:8px 12px;cursor:pointer;color:var(--text);display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--border)" onmouseenter="this.style.background='rgba(100,116,139,0.16)'" onmouseleave="this.style.background=''" ><span style="color:var(--ic-hash);display:inline-flex;flex-shrink:0;align-items:center"><svg class="ic" width="19" height="19" aria-hidden="true"><use href="#i-people"/></svg></span> Nhân viên</div>
@@ -12533,7 +12683,11 @@ const FILTER_ICONS = {
    nhóm/loại, nhãn lấy dấu hiệu TRỰC TIẾP từ hàng dropdown (chấm màu phân loại / icon ống nghe
    đỏ / điện thoại xanh) — giữ nguyên màu NGỮ NGHĨA của từng hàng, đừng tô xanh đè lên. */
 function filterLabelHTML(icon, text) {
-  return '<span style="color:var(--ic-hash);display:inline-flex;flex-shrink:0;align-items:center">' + icon + '</span> ' + text;
+  /* ⟳ 2026-11-23 (yêu cầu “cho tên nằm xích ra và ngang với icon”): bọc CHỮ trong
+     `.flt-txt` thay vì để text node trần + 1 dấu cách — nhãn nay là flex (`align-items:
+     center` + `gap`), mà text node trần trong flex container thì KHÔNG cắt được bằng
+     `text-overflow: ellipsis` (cần hộp riêng, xem CSS `#filterNhomLabel .flt-txt`). */
+  return '<span class="flt-ico" style="color:var(--ic-hash);display:inline-flex;flex-shrink:0;align-items:center">' + icon + '</span><span class="flt-txt">' + text + '</span>';
 }
 /* Nhãn ô lọc tự **BỎ ICON** khi không đủ chỗ — dùng cho "DS nhóm" và "Chi tiết nợ".
 
@@ -15733,7 +15887,18 @@ function renderCards(q='') {
   fitLabelCols();  // 2026-10-26: 3 giá trị Mã KV / Mã sổ / Số TBI thẳng một cột (xem `fitLabelCols`)
   fitTbiAlign();   // 2026-10-26: cụm ⚡số TBI thẳng cột với viên mã KH (xem `fitTbiAlign`)
   fitAbcAlign();   // 2026-10-26: icon 🏷 hàng ABC thẳng cột với icon 🏷 viên mã KH (xem `fitAbcAlign`)
-  initSwipeCards();  // 2026-11-02: bọc thẻ + gắn cử chỉ TRƯỢT SANG TRÁI (hiện “Quay lại” / “Xoá”)
+  /* 🗑 2026-11-23 (yêu cầu “bỏ trượt ngang để xoá”, ảnh = thẻ trượt lộ khay đỏ “Xoá”):
+     TẮT HẲN thao tác TRƯỢT NGANG ĐỂ XOÁ — KHÔNG gọi `initSwipeCards()` nữa.
+     Hệ quả: thẻ KHÔNG còn được bọc trong `.kh-swipe`, không có khay `.kh-swipe-acts` ⇒
+     vuốt/lướt ngang trên thẻ chỉ còn là cuộn trang như bình thường, không lộ nút “Xoá”.
+     ⚠️ GIỮ NGUYÊN (đừng xoá) để bật lại dễ: `initSwipeCards()` · `bindSwipeCard()` ·
+     `swipeDelete()` · `closeSwipes()` · `SWIPE_W` · khối CSS `.kh-swipe*` · hộp xác nhận
+     `openSwipeConfirm()` — muốn khôi phục chỉ cần BỎ CHÚ THÍCH đúng 1 dòng dưới đây.
+     ⛔ Đừng gọi `initSwipeCards()` ở chỗ khác (cử chỉ chỉ được gắn 1 lần, ngay sau render).
+     📌 Khách đã “xoá” từ trước vẫn nằm trong `localStorage['qlno_hidden_cards_v1']` ⇒ vẫn bị
+     ẩn khỏi danh sách như cũ; tắt trượt KHÔNG làm các thẻ đó hiện lại (muốn hiện lại phải
+     xoá khoá đó — xem `HIDE_KEY`). */
+  // initSwipeCards();  // 🗑 2026-11-23: tắt trượt ngang để xoá — xem chú thích ngay trên
 }
 
 /* ══ 2026-11-02 — TRƯỢT THẺ SANG TRÁI: HIỆN “Quay lại” + “Xoá” ══════════════════════════════
@@ -16400,6 +16565,9 @@ function lpSdtChay() {
        chú thích CSS `.lpsdt-act`); riêng “Sao chép” là `<button>` vì nó KHÔNG đi đâu cả, chỉ
        đẩy số vào clipboard bằng chính 3 nấc copy của app. */
     ov.innerHTML = '<div class="lpcb-card">' +
+        /* ➕ 2026-11-24 (yêu cầu “thêm tên kh ở trên”): dòng TÊN KHÁCH nằm TRÊN dòng số điện
+           thoại. Rỗng + ẩn cho tới khi `lpSdtChay()` điền tên (xem chỗ gán `.lpsdt-name`). */
+        '<div class="lpsdt-name"></div>' +
         '<div class="lpcb-title">Số điện thoại <b class="lpsdt-num"></b></div>' +
         '<a class="lpsdt-act" data-act="call" href="#"><svg class="ic" width="16" height="16" ' +
           'aria-hidden="true" style="vertical-align:middle"><use href="#i-call"/></svg>Gọi điện</a>' +
@@ -16418,6 +16586,20 @@ function lpSdtChay() {
     document.body.appendChild(ov);
   }
   ov.querySelector('.lpsdt-num').textContent = num;
+  /* ➕ 2026-11-24 (yêu cầu “thêm tên kh ở trên”): tên khách lấy từ THẺ đang chứa viên SĐT
+     (`data-ma` của `.kh-card`) rồi tra `allData`/`filtered` — ⛔ KHÔNG đọc chữ trên thẻ (tên đã bị
+     cắt `…` khi hẹp, có thể đang được tô sáng tìm kiếm); cùng đường tra với `openCardFn()`.
+     Mở hộp từ chỗ không có thẻ KH (vd. liên kết `tel:` trong tấm Chi tiết) ⇒ chuỗi rỗng ⇒ ẩn dòng. */
+  const _card = (el.closest ? el.closest('.kh-card[data-ma]') : null);
+  const _ma = _card ? (_card.dataset.ma || '') : '';
+  const _rec = _ma ? (allData.find(function (x) { return x.ma_khach_hang === _ma; }) ||
+                      filtered.find(function (x) { return x.ma_khach_hang === _ma; })) : null;
+  const _ten = (_rec && _rec.ten_khach_hang) ? String(_rec.ten_khach_hang).trim() : '';
+  const _nameEl = ov.querySelector('.lpsdt-name');
+  if (_nameEl) {
+    _nameEl.textContent = _ten;
+    _nameEl.style.display = _ten ? '' : 'none';
+  }
   ov.querySelector('[data-act="call"]').setAttribute('href', 'tel:' + num);
   const za = ov.querySelector('[data-act="zalo"]');
   if (z) { za.setAttribute('href', z); za.style.display = ''; }
@@ -16860,9 +17042,13 @@ function cardFnEl() {
   ov = document.createElement('div');
   ov.id = 'cardFnBox';
   ov.className = 'lpcb-overlay';
+  /* 🗑 2026-11-24 (yêu cầu “bỏ chữ chức năng”, ảnh = dòng “Chức năng BAN QUẢN LÝ DỰ ÁN…”): tiêu đề
+     hộp chỉ còn TÊN KHÁCH, bỏ chữ “Chức năng” đứng trước. ⛔ Giữ nguyên `<div class="lpcb-title">`
+     + `<b class="card-fn-name">` (CSS `.lpcb-title` và `openCardFn()` vẫn bám vào); muốn dựng lại
+     chữ thì thêm đúng chuỗi `Chức năng ` ngay trước thẻ `<b>`. */
   /* ⛔ Không dùng backtick trong chuỗi dựng hộp này: tệp giữ lối viết cũ cho khối hộp. */
   ov.innerHTML = '<div class="lpcb-card">' +
-      '<div class="lpcb-title">Chức năng <b class="card-fn-name"></b></div>' +
+      '<div class="lpcb-title"><b class="card-fn-name"></b></div>' +
       '<button class="lpsdt-act" data-act="copy" type="button">' +
         '<svg class="ic" width="16" height="16" aria-hidden="true" style="vertical-align:middle">' +
         '<use href="#i-copy"/></svg>Copy tin nhắn</button>' +
@@ -16954,6 +17140,26 @@ const CD_IC_LEDGER = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidde
   '<path d="M4.7 17.2c1.3 0 1.4-1.9 2.7-1.9s1.4 1.9 2.7 1.9 1.4-1.9 2.7-1.9 1.4 1.9 2.7 1.9" fill="none" stroke="#8f9cb4" stroke-width="1.5" stroke-linecap="round"/>' +
   '</svg>';
 
+/* ➕ 2026-11-24 (yêu cầu “hiển thị theo thứ tự từ tháng mới nhất đến tháng cũ nhất, từ trên xuống”):
+   KHOÁ SẮP XẾP KỲ theo `thang_no` (dạng “1-9/2026”, “12/2026”, “5/25” …) ⇒ đọc cặp THÁNG/NĂM
+   cuối cùng trong chuỗi, năm 2 số coi là 20xx, gộp thành số `yyyymm` để so sánh. Chuỗi rỗng/không
+   khớp ⇒ khoá 0 (xuống cuối). ⛔ Đừng đổi sang so sánh CHUỖI: “1-10/2026” sẽ đứng trước “1-9/2026”. */
+function kySortKey(thangNo) {
+  const m = String(thangNo == null ? '' : thangNo).match(/(\d{1,2})\s*\/\s*(\d{2,4})/);
+  if (!m) return 0;
+  const mm = parseInt(m[1], 10);
+  let yy = parseInt(m[2], 10);
+  if (yy < 100) yy += 2000;
+  return yy * 100 + mm;
+}
+/* Trả bản SAO đã sắp xếp MỚI NHẤT → CŨ NHẤT (ổn định với các kỳ trùng tháng).
+   Dùng chung cho tấm “Chi tiết” (`showDetailRow`) và tấm “Thanh toán” (`openPayPanel`). */
+function sapXepKyMoiNhat(arr) {
+  return (Array.isArray(arr) ? arr.slice() : []).sort(function (a, b) {
+    return kySortKey(b && b.thang_no) - kySortKey(a && a.thang_no);
+  });
+}
+
 function showDetailRow(r) {
   if (!r) return;
   document.getElementById('modalName').textContent = r.ten_khach_hang || 'Không có tên';
@@ -16974,7 +17180,8 @@ function showDetailRow(r) {
   // MỌI kỳ của khách (một khách có thể nợ nhiều dòng trong `allData`): dùng cho “Chi tiết nợ”
   // và cho “TỔNG NỢ”. Không có dòng nào trùng mã thì lấy chính bản ghi đang xem.
   const custRecords = allData.filter(x => x.ma_khach_hang === r.ma_khach_hang);
-  const recs = custRecords.length ? custRecords : [r];
+  /* ⟳ 2026-11-24: sắp MỚI NHẤT → CŨ NHẤT trước khi vẽ danh sách “Kỳ …” (tổng tiền không đổi). */
+  const recs = sapXepKyMoiNhat(custRecords.length ? custRecords : [r]);
   const totalTien = recs.reduce((s, x) => s + (x.tien_no || 0), 0);
 
   /* ⚠️ `fmt()` (không phải `fmtHtml`) cho tiền trong thẻ: `fmtHtml` bọc chữ số ĐẦU của khoảng
@@ -17103,7 +17310,8 @@ function openPayPanel(el) {
   const host = el && el.closest ? el.closest('[data-ma]') : null;
   const ma = host ? String(host.dataset.ma || '') : '';
   if (!ma) return;
-  _payRecs = allData.filter(x => (x.ma_khach_hang || '') === ma);
+  /* ⟳ 2026-11-24: danh sách “Đợt …” cũng MỚI NHẤT → CŨ NHẤT (tổng tiền không đổi). */
+  _payRecs = sapXepKyMoiNhat(allData.filter(x => (x.ma_khach_hang || '') === ma));
   if (!_payRecs.length) return;
   shotFontCss();   // 🔤 gọi SẴN font cho ảnh chụp (xem `shotFontCss`) — tới lúc chạm nút QR là đã có cache
   renderPay();
