@@ -11893,26 +11893,16 @@ function handleFileUpload(inp) {
 }
 
 function processFile(file) {
+  /* 🚫 CHỈ NẠP TỆP EXCEL ĐÚNG ĐỊNH DẠNG — TỆP KHÁC XOÁ TRẮNG MÀN HÌNH (2026-11-27)
+     Yêu cầu: “khi chọn file excel dạng như ảnh thì mới vô được, còn tất cả các dạng khác thì không
+     hiển thị bất cứ thông tin gì” + “xoá trắng luôn màn hình… quay về màn Tải dữ liệu”.
+     ⇒ ở đây CHỈ bật `loadingState`; mọi thay đổi UI (ẩn `dataView`, đổi `fileLabel`, reset bộ lọc,
+     `nvScope`/`soScope`/`sortCol`…) nằm SAU bước kiểm tra cột trong `reader.onload`.
+     ⛔ Đừng dời khối reset trở lại đây: đặt trước bước kiểm tra là tệp sai vẫn xoá sạch bộ lọc và
+     đổi tên tệp trên đầu trang dù không nạp được gì. */
+  const _prevWelcome = document.getElementById('welcomeState').style.display;
   document.getElementById('welcomeState').style.display = 'none';
   document.getElementById('loadingState').style.display = 'block';
-  document.getElementById('dataView').style.display = 'none';
-  // (#exportBtn đã BỎ 2026-11-10 — xem khối “5. TÁC VỤ BẢNG” trong tấm Cài đặt.)
-  document.getElementById('viewBtn').style.display = 'inline-flex';
-  applyViewBtnState();
-  document.getElementById('fileLabel').textContent = file.name;
-
-  // Reset all state carried over from a previous file
-  nvScope = '';
-  soScope = ''; updateSoTab();   // ⇢ 2026-11-06: tệp mới thì bỏ lọc mã sổ (mã sổ cũ không còn nghĩa)
-  currentPage = 1;
-  sortCol = 'danh_so'; sortDir = 1;   // ⟳ 2026-10-26: nạp tệp mới CŨNG xếp theo danh số (khớp mặc định)
-  document.getElementById('searchInput').value = '';
-  document.querySelector('.stats-row').classList.remove('collapsed');
-  document.getElementById('nvScope').classList.remove('collapsed');
-  document.getElementById('filterNhom').value = '';
-  fitAllFilterLabels();   // nhãn mặc định + đo lại theo bề rộng thật (xem `fitFilterLabel()`)
-  updateSortButtons();
-  document.querySelectorAll('.sa').forEach(el => { el.textContent = '↕'; el.closest('th').classList.remove('sorted'); });
 
   const reader = new FileReader();
   reader.onload = function(e) {
@@ -11922,6 +11912,10 @@ function processFile(file) {
       const ws = wb.Sheets[wb.SheetNames[0]];
       const rows = XLSX.utils.sheet_to_json(ws, {defval:''});
       const keys = Object.keys(rows[0] || {});
+      /* Hai dòng số “HĐ: … - KH: …” + “Nợ: …”: ẩn khi tệp sai, hiện lại khi nạp được (2 nhánh
+         dưới). Lấy MỘT lần; ⛔ chỉ ẩn khối `.count-lines` này, ĐỪNG ẩn `.count-info` — nút
+         ⚙ Cài đặt là cột 2 của lưới đó. */
+      const _countLines = document.querySelector('.count-lines');
 
       function _norm(s) { try { return s.normalize('NFD').replace(/[Đđ]/g,'D').replace(/[\u0300-\u036f]/g,'').toUpperCase().replace(/[_\s]/g,''); } catch(e) { return s.toUpperCase().replace(/[^A-Z0-9]/g,''); } }
       function fc(...names) {
@@ -11956,6 +11950,59 @@ function processFile(file) {
       /* ⬅ 2026-11-06: tệp xuất ra RỒI nhập lại (hoặc tệp không có cột tháng) vẫn giữ được kỳ —
          đọc cụm `kỳ-tháng/năm` trong cột này khi cột tháng trống (xem `kyTuSoHD`). */
       const cSoHD   = fc('SỐ HD NỢ','SỐ HĐ NỢ','SO HD NO','SO_HD_NO','SỐ HĐ','SO HD');
+
+      /* 🚫 KIỂM TRA ĐỊNH DẠNG (2026-11-27): đủ **9 cột bắt buộc** để hiển thị được bất cứ thứ gì —
+         MA KH · TEN KH · DIA CHI · MA SO GCS · DANH SO · THANG NO · TIEN NO · SDT · SO TBI.
+         Bộ này có ở CẢ tệp gốc của công ty LẪN tệp `exportExcel` xuất ra ⇒ thiếu 1 cột là không
+         phải tệp nợ. ⛔ Đừng thêm `ABC` / `VI TRI DA CAP NHAT` / `STT` / `GHI CHU` / `DOI SOT MOI`:
+         tệp gốc không có `VI TRI DA CAP NHAT` ⇒ thêm vào là chặn nhầm tệp ĐÚNG. */
+      const _du9Cot = !!(cMa && cTen && cDchi && cSoGcs && cDanhSo && cThang && cTien && cDt && cSoTbi);
+      if (!_du9Cot) {
+        /* 🧹 TỆP SAI ⇒ XOÁ TRẮNG rồi về màn “Tải dữ liệu để bắt đầu”: dùng lại `clearSavedData()`
+           (xoá `allData`/`filtered`, `qlno_data_v1`, HIGHLIGHT_KEY, IndexedDB; `fileLabel` =
+           “Chưa có dữ liệu”, ẩn `dataView`, hiện `welcomeState`, ẩn `viewBtn`). ⛔ Đừng “chỉ ẩn
+           `dataView`”: bản lưu còn đó là F5 xong `restoreData()` dựng lại nguyên danh sách cũ.
+           Hàm đó KHÔNG làm 3 việc dưới ⇒ làm tay: `summaryData`, DOM thẻ/dòng bảng còn sót, và 2
+           dòng số `.count-lines` (nằm NGOÀI `#dataView`, số chỉ được vẽ trong `applyFilters()`).
+           ⛔ Đừng bỏ `showToast`: không báo gì thì người dùng tưởng app lỗi. */
+        document.getElementById('loadingState').style.display = 'none';
+        summaryData = [];
+        clearSavedData();
+        document.getElementById('cardList').innerHTML = '';
+        document.getElementById('tableBody').innerHTML = '';
+        if (_countLines) _countLines.style.display = 'none';
+        /* 🧾 `#detailView` / `#summaryView` / `#oldView` cũng NẰM NGOÀI `#dataView` (con của
+           `#mainContent`) ⇒ phải ẩn tay, không thì dưới hàng đếm còn trơ khối phân trang
+           “1–3 / 3  « ‹ 1 › »” của tệp cũ (đo được trên màn hình sau khi xoá trắng).
+           Hiện lại: `switchTab(currentTab)` ở nhánh nạp tệp — ⛔ đừng thay nó bằng `applyFilters()`,
+           hàm đó KHÔNG đụng `display` của 3 khối này. */
+        ['detailView', 'summaryView', 'oldView'].forEach(id => {
+          document.getElementById(id).style.display = 'none';
+        });
+        showToast('Tệp không đúng định dạng — không nạp gì.');
+        return;
+      }
+
+      /* ↓ TỪ ĐÂY TRỞ XUỐNG mới thật sự nạp tệp ⇒ mới được reset UI + bộ lọc của tệp trước. */
+      document.getElementById('dataView').style.display = 'none';
+      // (#exportBtn đã BỎ 2026-11-10 — xem khối “5. TÁC VỤ BẢNG” trong tấm Cài đặt.)
+      document.getElementById('viewBtn').style.display = 'inline-flex';
+      applyViewBtnState();
+      if (_countLines) _countLines.style.display = '';   // hiện lại 2 dòng số (đã bị ẩn khi tệp sai)
+      document.getElementById('fileLabel').textContent = file.name;
+
+      // Reset all state carried over from a previous file
+      nvScope = '';
+      soScope = ''; updateSoTab();   // ⇢ 2026-11-06: tệp mới thì bỏ lọc mã sổ (mã sổ cũ không còn nghĩa)
+      currentPage = 1;
+      sortCol = 'danh_so'; sortDir = 1;   // ⟳ 2026-10-26: nạp tệp mới CŨNG xếp theo danh số (khớp mặc định)
+      document.getElementById('searchInput').value = '';
+      document.querySelector('.stats-row').classList.remove('collapsed');
+      document.getElementById('nvScope').classList.remove('collapsed');
+      document.getElementById('filterNhom').value = '';
+      fitAllFilterLabels();   // nhãn mặc định + đo lại theo bề rộng thật (xem `fitFilterLabel()`)
+      updateSortButtons();
+      document.querySelectorAll('.sa').forEach(el => { el.textContent = '↕'; el.closest('th').classList.remove('sorted'); });
       /* 🔎 2026-11-06 — CỘT THÁNG BỊ NHẬN NHẦM (yêu cầu “kiểm tra lại cột số hd nợ”, ảnh trên
          điện thoại `1HD:3.862.166` MẤT KỲ): tệp tháng 11 nạp vào máy có cột điểm danh tên
          **NHÂN VIÊN** lại mang tiêu đề khớp 'THANG NO' ⇒ `thang_no` toàn tên người ⇒ `chiKy()`
@@ -12095,7 +12142,11 @@ function processFile(file) {
         renderSummary();
       }
 
-      loadGhiChu(); initFilters(); updateStats(); applyFilters();
+      /* ⟳ `applyFilters()` → **`switchTab(currentTab)`**: nó cũng gọi `applyFilters()` bên trong nhưng
+         còn bật lại `#detailView`/`#summaryView`/`#oldView` đúng tab đang xem — 3 khối này bị ẩn
+         khi tệp trước đó sai định dạng (xem nhánh từ chối), ⛔ chỉ `applyFilters()` là chúng mất hút.
+         Cùng một lượt lọc như trước ⇒ không chậm thêm. */
+      loadGhiChu(); initFilters(); updateStats(); switchTab(currentTab);
       saveData();
       document.getElementById('loadingState').style.display = 'none';
       document.getElementById('dataView').style.display = 'block';
@@ -12112,7 +12163,8 @@ function processFile(file) {
   reader.onerror = function() {
     alert('Không thể đọc file. Vui lòng thử lại.');
     document.getElementById('loadingState').style.display = 'none';
-    document.getElementById('welcomeState').style.display = 'block';
+    // `dataView` chưa bị đụng trước khi đọc xong ⇒ chỉ cần trả lại màn chào như cũ.
+    document.getElementById('welcomeState').style.display = _prevWelcome;
   };
   reader.readAsArrayBuffer(file);
 }
@@ -18561,11 +18613,25 @@ function exportExcel(mode) {
   const ws = XLSX.utils.json_to_sheet(data);
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Danh sách nợ');
-  const date = new Date().toISOString().slice(0,10);
-  /* Nhãn phạm vi trong TÊN TỆP (giống quy ước của tệp cắt); “In tất cả” giữ tên cũ, ⛔ không thêm
-     `_TATCA`. */
+  /* Nhãn phạm vi trong TÊN TỆP (giống quy ước của tệp cắt); “In tất cả” không có nhãn, ⛔ không
+     thêm `TATCA` (tên gọn như cũ). */
   const nhanPm = { over5: 'TREN5TR', over3: 'TREN3TR', over3old: 'TREN3TR_NOCU', old: 'NOCU', multi: 'NHIEUKY' }[mode] || '';
-  XLSX.writeFile(wb, 'DS_TongNo_' + (nhanPm ? nhanPm + '_' : '') + date + '.xlsx');
+  XLSX.writeFile(wb, _tenTepExcel(nhanPm));
+}
+
+/* 📄 TÊN TỆP EXCEL APP XUẤT RA (2026-11-27) — yêu cầu “DSno_DSH_08h08_27.11 đổi lại định dạng
+   DSnoDSH.08h08.27-11”. Quy tắc: **`DSno` + <nhãn> + `.` + <HH>h<MM> + `.` + <dd>-<mm> + `.xlsx`**.
+   · Nhãn (tuỳ chọn) là phần mô tả đứng LIỀN sau `DSno`, viết liền không gạch dưới:
+     `TREN3TR` · `NOCU` · `NHIEUKY` (Xuất Excel) · `CAT` + nhãn + tên NV (Xuất file cắt).
+   · Tên NV là MỘT field riêng, đứng ngay trước giờ: `DSnoCATTREN3TR.Đào Sơn Hà.08h08.27-11.xlsx`.
+   · GIỜ/NGÀY LẤY THEO MÁY (`getHours`/`getDate`) — ⛔ đừng quay lại `toISOString()`: đó là giờ
+     UTC, máy VN (UTC+7) xuất buổi tối sẽ ra LÙI 1 NGÀY.
+   · Luôn 2 chữ số (`padStart`) để tên sắp xếp được và không lẫn `8h8` với `08h08`.
+   ⚠️ Chỉ dùng cho 2 tệp .xlsx; tệp mẫu .html và bản sao lưu .json giữ tên riêng của chúng. */
+function _tenTepExcel(nhan) {
+  const d = new Date(), h2 = n => String(n).padStart(2, '0');
+  return 'DSno' + (nhan || '') + '.' + h2(d.getHours()) + 'h' + h2(d.getMinutes()) +
+         '.' + h2(d.getDate()) + '-' + h2(d.getMonth() + 1) + '.xlsx';
 }
 
 /* ═══ “XUẤT FILE CẮT” (2026-11-06 — nút mới kế nút “Xuất file”) ═══════════════════════
@@ -19107,24 +19173,24 @@ function exportExcelCut(mode) {
   ws['!cols'][6] = { wch: CUT_HD_WCH };
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Danh sách đang xem');
-  const date = new Date().toISOString().slice(0,10);
   /* ⇢ 2026-11-06 (yêu cầu “khi xuất file in cắt thì hiển thị thêm tên nhân viên ở tên file”):
-     tên tệp = `DS_TongNo_CAT_<TÊN NV>_<ngày>.xlsx` — NV lấy đúng người ĐANG LỌC ở ô “Nhân viên”
-     (`#filterNhom`) hoặc `nvScope` (bấm vào tên NV trong thẻ). Không lọc NV ⇒ giữ tên cũ
-     `DS_TongNo_CAT_<ngày>.xlsx`, ⛔ đừng ghép chuỗi rỗng thành `_ _`.
+     NV lấy đúng người ĐANG LỌC ở ô “Nhân viên” (`#filterNhom`) hoặc `nvScope` (bấm vào tên NV
+     trong thẻ). ⟳ 2026-11-27: tên tệp nay theo định dạng `DSno…HHhMM.dd-mm.xlsx` (xem
+     `_tenTepExcel`), NV là MỘT field riêng ngăn bằng dấu `.`; không lọc NV ⇒ BỎ HẲN field đó
+     (⛔ đừng để lại dấu `.` trơ).
      ⚠️ Bỏ các ký tự Windows không cho phép trong tên tệp (`\ / : * ? " < > |`) — tên NV là dữ
      liệu tệp Excel nên có thể chứa chúng; giữ nguyên dấu tiếng Việt và khoảng cách cho dễ đọc. */
   const nvTen = String(document.getElementById('filterNhom').value || nvScope || '').trim();
-  const nvPart = nvTen ? '_' + nvTen.replace(/[\\/:*?"<>|]/g, '').replace(/\s+/g, ' ').trim() : '';
+  const nvPart = nvTen ? '.' + nvTen.replace(/[\\/:*?"<>|]/g, '').replace(/\s+/g, ' ').trim() : '';
   /* ⇢ 2026-11-06 (menu phạm vi in): gắn thêm nhãn phạm vi vào TÊN TỆP để 2 lần xuất cùng ngày
-     không đè nhau, và nhìn tên là biết tệp in gì: `DS_TongNo_CAT_TREN3TR_<NV>_<ngày>.xlsx`.
-     “In tất cả” giữ nguyên tên cũ (⛔ đừng thêm `_TATCA` — người dùng đã quen tên đó). */
-  const pmTag = { over5: '_TREN5TR', over3: '_TREN3TR', over3old: '_TREN3TR_NOCU', old: '_NOCU', multi: '_NHIEUKY' }[mode] || '';
+     không đè nhau, và nhìn tên là biết tệp in gì: `DSnoCATTREN3TR.<NV>.08h08.27-11.xlsx`.
+     “In tất cả” không có nhãn (⛔ đừng thêm `TATCA` — người dùng đã quen tên gọn). */
+  const pmTag = { over5: 'TREN5TR', over3: 'TREN3TR', over3old: 'TREN3TR_NOCU', old: 'NOCU', multi: 'NHIEUKY' }[mode] || '';
   /* ⟳ 2026-11-09: KHÔNG dùng XLSX.writeFile nữa — ghi ra ArrayBuffer rồi vá wrapText cho cột
      “SỐ HD NỢ” bằng cutWrapSoHD(), sau đó tự tải bằng cutDownload(). Phần tên tệp giữ NGUYÊN.
      ⚠️ Nếu bản vá không chạy (zip khác dạng), cutWrapSoHD trả lại buffer gốc ⇒ vẫn tải được tệp,
      chỉ mất phần xuống dòng (hành vi dự phòng có chủ ý, xem chú thích ở hằng CUT_WRAP_SOHD). */
-  const fname = `DS_TongNo_CAT${pmTag}${nvPart}_${date}.xlsx`;
+  const fname = _tenTepExcel('CAT' + pmTag + nvPart);
   const u8 = XLSX.write(wb, { type: 'array', bookType: 'xlsx' });
   cutDownload(cutWrapSoHD(u8), fname);
 }
